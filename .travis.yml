@@ -13,6 +13,7 @@ notifications:
   email:
     - turtlebender@gmail.com
   irc:
-    - irc.utils.globuscs.info#graph
-    on_success: always
-    on_failure: always
+    channels:
+      - "irc.utils.globuscs.info#graph"
+    use_notice: true
+    skip_join: true
