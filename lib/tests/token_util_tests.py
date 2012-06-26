@@ -60,9 +60,14 @@ class TestTokenUtils(unittest.TestCase):
         token_map = token_utils.request_access_token('myid',
                 'mysecret','theauthcode', 'http://oauth.org/2/authorize')
         self.assertEqual('faohwefadfawaw', token_map['access_token'])
+        self.assertEqual('faohwefadfawaw', token_map.access_token)
         self.assertEqual('fhajhkjbhrafw', token_map['refresh_token'])
+        self.assertEqual('fhajhkjbhrafw', token_map.refresh_token)
         self.assertEqual(123456789, token_map['expires_in'])
+        self.assertEqual(123456789, token_map.expires_in)
         self.assertEqual('Bearer', token_map['token_type'])
+        self.assertEqual('Bearer', token_map.token_type)
+
 
     def test_request_access_token_failure(self):
         error_message = {
