@@ -8,9 +8,14 @@ CONFIG = {
   'version':'0.0.1',
   'name':'nexus-client',
   'package_dir': {'':'lib'},
-  'packages': [ 'nexus', ],
+  'packages': find_packages(exclude=[
+      "*.tests",
+      "*.tests.*",
+      "tests.*",
+      "tests"]),
   'install_requires': install_requires,
-  'test_requires': ['nose']
+  'tests_require': ['nose'],
+  'test_suite': 'tests',
 }
 
 setup(**CONFIG)
