@@ -6,6 +6,7 @@ Helps with generating tokens, validating tokens.
 import binascii
 from collections import Mapping
 import hashlib
+import logging
 import os
 import re
 import sys
@@ -176,7 +177,7 @@ def get_token_refresh(client_id, client_secret,
             auth=(client_id, client_secret),
             data=payload, verify=True)
     if response.status_code == requests.codes.ok:
-        return response.json
+        return DictObj(response.json)
     raise TokenRequestError(response.json)
 
 

@@ -14,7 +14,7 @@ CONFIG = {
       "tests.*",
       "tests"]),
   'install_requires': install_requires,
-  'tests_require': ['nose'],
+  'tests_require': ['nose', 'testfixtures'],
   'test_suite': 'tests',
 }
 
