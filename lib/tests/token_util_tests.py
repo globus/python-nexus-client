@@ -29,8 +29,10 @@ class TestTokenUtils(unittest.TestCase):
         expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
         expiry = int(time.mktime(expiry.timetuple()))
         cert_url = 'http://tester.com/cert1'
-        unsigned_token = "un=test|expiry={0}|SigningSubject={1}".format(expiry,
-                cert_url)
+
+        expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
+        unsigned_token = "un=test|expiry={0}|SigningSubject={1}|expiry={2}".format(expiry,
+                cert_url, time.mktime(expires.timetuple()))
         unsigned_token = unsigned_token
         pub_key, priv_key = key.newkeys(1024)
         sig = rsa.sign(unsigned_token, priv_key, 'SHA-256')

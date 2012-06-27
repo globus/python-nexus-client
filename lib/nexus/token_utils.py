@@ -5,11 +5,13 @@ Helps with generating tokens, validating tokens.
 """
 import binascii
 from collections import Mapping
+from datetime import datetime
 import hashlib
 import logging
 import os
 import re
 import sys
+import time
 import urllib
 
 import requests
@@ -120,6 +122,7 @@ def validate_token(token, cache=InMemoryCache()):
     if not cache.has_public_key(subject_hash):
         public_key = requests.get(token_map['SigningSubject']).content
         cache.save_public_key(subject_hash, public_key)
+
     public_key = cache.get_public_key(subject_hash)
     sig = token_map.pop('sig')
     match = re.match('^(.+)\|sig=.*', unencoded_token)
@@ -133,9 +136,12 @@ def validate_token(token, cache=InMemoryCache()):
         log.debug(exc_value)
         log.debug(exc_traceback)
         raise ValueError('Invalid Signature')
+    now = time.mktime(datetime.utcnow().timetuple())
+    if token_map['expiry'] < now:
+        raise ValueError('TokenExpired')
 
 def request_access_token(client_id, client_secret,
-        auth_code, auth_uri="https://graph.api.globuscs.info/authorize"):
+        auth_code, auth_uri="https://graph.api.globusonline.org/token"):
     """
     Given an authorization code, request an access token.
 
