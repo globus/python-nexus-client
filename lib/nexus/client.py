@@ -50,11 +50,10 @@ class NexusClient(object):
         :return: True if the authentication is valid, else False
         """
         try:
-            token_utils.validate_token(token, self.cache)
-            return True
+            return token_utils.validate_token(token, self.cache)
         except ValueError:
             log.exception("ValueError")
-            return False
+            return None
 
     def generate_request_url(self, username=None):
         """

@@ -7,6 +7,7 @@ import binascii
 from collections import Mapping
 from datetime import datetime
 import hashlib
+import json
 import logging
 import os
 import re
@@ -120,7 +121,8 @@ def validate_token(token, cache=InMemoryCache()):
         token_map[key] = value
     subject_hash = hashlib.md5(token_map['SigningSubject']).hexdigest()
     if not cache.has_public_key(subject_hash):
-        public_key = requests.get(token_map['SigningSubject']).content
+        key_struct = requests.get(token_map['SigningSubject']).content
+        public_key = json.loads(key_struct)['pubkey']
         cache.save_public_key(subject_hash, public_key)
 
     public_key = cache.get_public_key(subject_hash)
@@ -139,6 +141,7 @@ def validate_token(token, cache=InMemoryCache()):
     now = time.mktime(datetime.utcnow().timetuple())
     if token_map['expiry'] < now:
         raise ValueError('TokenExpired')
+    return token_map['un']
 
 def request_access_token(client_id, client_secret,
         auth_code, auth_uri="https://graph.api.globusonline.org/token"):
