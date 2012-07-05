@@ -105,7 +105,7 @@ class LoggingCacheWrapper(object):
         log.debug(message.format(self.cache.__class__.__name__, key_id))
         return self.cache.get_public_key(key_id)
 
-def validate_token(token, cache=InMemoryCache()):
+def validate_token(token, cache=InMemoryCache(), verify=True):
     """
     Given a token validate it.
 
@@ -121,7 +121,7 @@ def validate_token(token, cache=InMemoryCache()):
         token_map[key] = value
     subject_hash = hashlib.md5(token_map['SigningSubject']).hexdigest()
     if not cache.has_public_key(subject_hash):
-        key_struct = requests.get(token_map['SigningSubject']).content
+        key_struct = requests.get(token_map['SigningSubject'], verify=verify).content
         public_key = json.loads(key_struct)['pubkey']
         cache.save_public_key(subject_hash, public_key)
 
@@ -144,7 +144,8 @@ def validate_token(token, cache=InMemoryCache()):
     return token_map['un']
 
 def request_access_token(client_id, client_secret,
-        auth_code, auth_uri="https://graph.api.globusonline.org/token"):
+        auth_code, auth_uri="https://graph.api.globusonline.org/token",
+        verify=True):
     """
     Given an authorization code, request an access token.
 
@@ -163,13 +164,14 @@ def request_access_token(client_id, client_secret,
             }
     response = requests.post(auth_uri,
             auth=(client_id, client_secret),
-            data=payload, verify=True)
+            data=payload, verify=verify)
     if response.status_code == requests.codes.ok:
         return DictObj(response.json)
     raise TokenRequestError(response.json)
 
 def get_token_refresh(client_id, client_secret,
-        refresh_token, auth_uri="https://graph.api.globuscs.info/authorize"):
+        refresh_token, auth_uri="https://graph.api.globuscs.info/authorize",
+        verify=True):
     """
     Update the access token using the refresh token from a previous request.
 
@@ -184,7 +186,7 @@ def get_token_refresh(client_id, client_secret,
             }
     response = requests.post(auth_uri,
             auth=(client_id, client_secret),
-            data=payload, verify=True)
+            data=payload, verify=verify)
     if response.status_code == requests.codes.ok:
         return DictObj(response.json)
     raise TokenRequestError(response.json)
