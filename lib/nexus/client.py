@@ -20,20 +20,20 @@ class NexusClient(object):
     def __init__(self, config=None, config_file=None):
         if config_file is not None:
             with open(config_file, 'r') as cfg:
-                config = yaml.load(cfg.read())
+                self.config = yaml.load(cfg.read())
         elif config is not None:
             self.config = config
         else:
             raise AttributeError("No configuration was specified")
-        self.server = config['server']
+        self.server = self.config['server']
         cache_config = self.config.get('cache', {
                     'class': 'nexus.token_utils.InMemoryCache',
                     'args': [],
                     })
-        self.api_key = config['api_key']
-        self.api_secret = config['api_secret']
+        self.api_key = self.config['api_key']
+        self.api_secret = self.config['api_secret']
         cache_class = cache_config['class']
-        self.verify_ssl = config.get('verify_ssl', True)
+        self.verify_ssl = self.config.get('verify_ssl', True)
         mod_name = '.'.join(cache_class.split('.')[:-1])
         mod = __import__(mod_name)
         for child_mod_name in mod_name.split('.')[1:]:
