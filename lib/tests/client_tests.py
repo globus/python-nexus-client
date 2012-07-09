@@ -2,6 +2,7 @@ import binascii
 
 from collections import namedtuple
 import datetime
+import json
 import time
 
 import unittest
@@ -40,20 +41,22 @@ class ClientTests(unittest.TestCase):
 
     @attr('unit')
     def test_authenticate_valid_user(self):
+        username = 'test1'
         def auth(*args, **kwargs):
-            return None
+            return username
         self.replacer.replace('nexus.token_utils.validate_token', auth)
         client = Client(self.config)
-        self.assertTrue(client.authenticate_user('this is a good token'))
+        self.assertEqual(username, client.authenticate_user('this is a good token'))
     
     @attr('integration')
     def test_full_authenticate_user(self):
         import rsa
         pubkey, privkey = rsa.newkeys(512)
         def get_cert(*args, **kwargs):
-            return namedtuple('Request', ['content'])(pubkey.save_pkcs1())
+            return namedtuple('Request',
+                    ['content'])(json.dumps({'pubkey':pubkey.save_pkcs1()}))
         self.replacer.replace('requests.get', get_cert)
-        token = 'SigningSubject=https://graph.api.globusonline.org/keys/test1|expiry={0}'
+        token = 'un=test|SigningSubject=https://graph.api.globusonline.org/keys/test1|expiry={0}'
         expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
         token = token.format(time.mktime(expires.timetuple()))
         sig = rsa.sign(token, privkey, 'SHA-1')

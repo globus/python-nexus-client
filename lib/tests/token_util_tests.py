@@ -42,7 +42,7 @@ class TestTokenUtils(unittest.TestCase):
         signed_token = "{0}|sig={1}".format(unsigned_token,
             encoded_sig)
         response = requests.Response()
-        response._content = pub_key.save_pkcs1()
+        response._content = json.dumps({'pubkey':pub_key.save_pkcs1()})
         self.replacer.replace('requests.get', lambda *args, **kwargs: response)
 
         token_utils.validate_token(signed_token)
