@@ -1,0 +1,6 @@
+server: auth.sandbox.globuscs.info
+cache:
+  class: 'nexus.token_utils.InMemoryCache'
+api_key: spq7498w1c66xcqh
+api_secret: m6fxo4x0wzx8ojrm62ksmn8mojlxqccw
+verify_ssl: false
