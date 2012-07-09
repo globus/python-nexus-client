@@ -6,10 +6,13 @@ DEPLOY_PIP_CMD=PIP_DOWNLOAD_CACHE=vendor/cache $(VIRTUAL_ENV_DIR)/bin/pip instal
 .PHONY: build
 build: $(VIRTUAL_ENV_DIR)/lib/python2.7/site-packages/goauth
 
-$(VIRTUAL_ENV_DIR)/lib/python2.7/site-packages/goauth/:
-	virtualenv --python python2.7 --no-site-packages $(VIRTUAL_ENV_DIR)
+$(VIRTUAL_ENV_DIR)/lib/python2.7/site-packages/goauth/: vendor/virtualenv.py
+	python vendor/virtualenv.py --python python2.7 --no-site-packages $(VIRTUAL_ENV_DIR)
 	$(PIP_CMD) requirements.txt
 	vendor/python/bin/python setup.py install
+
+vendor/virtualenv.py:
+	curl -o vendor/virtualenv.py https://raw.github.com/pypa/virtualenv/master/virtualenv.py
 
 clean:
 	rm -rf $(VIRTUAL_ENV_DIR)
