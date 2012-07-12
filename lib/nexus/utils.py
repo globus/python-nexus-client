@@ -85,7 +85,8 @@ def read_openssh_private_key(key_file, password=None):
     """
     Given an openssh private key, return an rsa PrivateKey object
     """
-    with open(os.path.expanduser(key_file), 'r') as file_handle:
+    abs_key_file = os.path.abspath(key_file)
+    with open(abs_key_file, 'r') as file_handle:
         key_data = file_handle.read()
     if 'ENCRYPTED' in key_data:
         command = 'openssl rsa -passin pass:{0} -in {1}'
