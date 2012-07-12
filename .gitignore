@@ -28,3 +28,6 @@ pip-log.txt
 
 #Virtualenv
 vendor/python
+foo*
+bar*
+baz*
