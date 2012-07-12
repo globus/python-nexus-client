@@ -18,7 +18,8 @@ from nexus.utils import (
         read_openssh_private_key,
         canonical_time,
         b64encode,
-        sha1_base64)
+        sha1_base64,
+        sign_with_rsa)
 import requests
 import rsa
 
@@ -105,7 +106,7 @@ class NexusClient(object):
                 time.mktime(datetime.utcnow().timetuple()) + result.expires_in
                 )
 
-    def request_access_token(self, password=None):
+    def request_client_credential(self, password=None):
         """
         This is designed to support section 4.4 of the OAuth 2.0 spec:
 
@@ -115,35 +116,16 @@ class NexusClient(object):
          control"
         """
         key_file = self.config.get('private_key_file', '~/.ssh/id_rsa')
-        private_key = read_openssh_private_key(key_file, password)
-        headers = {
-            'X-Nexus-UserId': self.api_key,
-            'X-Nexus-Sign': '1.0',
-        }
-        timestamp = canonical_time(datetime.now())
-        headers['X-Nexus-Timestamp'] = timestamp
         body = 'grant_type=client_credentials'
-        hashed_body = base64.b64encode(hashlib.sha1(body).digest())
         path = '/token'
-        hashed_path = base64.b64encode(hashlib.sha1(path).digest())
         method = 'POST'
-        to_sign = ("Method:{0}\n"
-            "Hashed Path:{1}\n"
-            "X-Nexus-Content-Hash:{2}\n"
-            "X-Nexus-Timestamp:{3}\n"
-            "X-Nexus-UserId:{4}")
-        to_sign = to_sign.format(method,
-                hashed_path,
-                hashed_body,
-                headers['X-Nexus-Timestamp'],
-                headers['X-Nexus-UserId'])
-        value = rsa.sign(to_sign, private_key, 'SHA-256')
-        sig = b64encode(value)
-        string_sig = ""
-        for i, line in enumerate(sig):
-            string_sig = string_sig + line
-            headers['X-Nexus-Authorization-{0}'.format(i)] = line
-        url_parts = ('https', self.server, '/token', None, None)
+        headers = sign_with_rsa(key_file,
+                body,
+                path,
+                method,
+                self.config['api_key'],
+                password)
+        url_parts = ('https', self.server, path, None, None)
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type':
             'client_credentials'}, headers=headers, verify=self.verify_ssl)

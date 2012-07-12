@@ -94,3 +94,34 @@ def read_openssh_private_key(key_file, password=None):
                 stdout=PIPE, stderr=PIPE, shell=True)
         key_data = proc.communicate()[0]
     return rsa.PrivateKey.load_pkcs1(key_data)
+
+def sign_with_rsa(key_file, body, path, method, user_id, password=None):
+    """
+    Sign a request using the specified rsa key.
+
+    :return: dictionary of headers
+    """
+    private_key = read_openssh_private_key(key_file, password)
+    headers = {
+            'X-Nexus-UserId': user_id,
+            'X-Nexus-Sign': 'version=1.0'
+            }
+    timestamp = canonical_time(datetime.datetime.now())
+    headers['X-Nexus-Timestamp'] = timestamp
+    hashed_body = base64.b64encode(hashlib.sha1(body).digest())
+    hashed_path =  base64.b64encode(hashlib.sha1(path).digest())
+    to_sign = ("Method:{0}\n"
+        "Hashed Path:{1}\n"
+        "X-Nexus-Content-Hash:{2}\n"
+        "X-Nexus-Timestamp:{3}\n"
+        "X-Nexus-UserId:{4}")
+    to_sign = to_sign.format(method,
+            hashed_path,
+            hashed_body,
+            headers['X-Nexus-Timestamp'],
+            headers['X-Nexus-UserId'])
+    value = rsa.sign(to_sign, private_key, 'SHA-256')
+    sig = b64encode(value)
+    for i, line in enumerate(sig):
+        headers['X-Nexus-Authorization-{0}'.format(i)] = line
+    return headers
