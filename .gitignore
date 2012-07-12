@@ -27,7 +27,11 @@ pip-log.txt
 .mr.developer.cfg
 
 #Virtualenv
+vendor/virtualenv.py
 vendor/python
 foo*
 bar*
 baz*
+
+
+
