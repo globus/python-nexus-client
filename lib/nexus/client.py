@@ -1,14 +1,26 @@
 """
 Client for interacting with Nexus.
 """
+import base64
 from datetime import datetime
-import time
+import hashlib
+import json
 import logging
+from subprocess import Popen, PIPE
+import time
 import urllib
 import urlparse
 
 import yaml
 import nexus.token_utils as token_utils
+from nexus.utils import (
+        read_openssh_public_key,
+        read_openssh_private_key,
+        canonical_time,
+        b64encode,
+        sha1_base64)
+import requests
+import rsa
 
 log = logging.getLogger()
 
@@ -92,3 +104,49 @@ class NexusClient(object):
                 result.refresh_token,
                 time.mktime(datetime.utcnow().timetuple()) + result.expires_in
                 )
+
+    def request_access_token(self, password=None):
+        """
+        This is designed to support section 4.4 of the OAuth 2.0 spec:
+
+        "The client can request an access token using only its client
+         credentials (or other supported means of authentication) when the
+         client is requesting access to the protected resources under its
+         control"
+        """
+        key_file = self.config.get('private_key_file', '~/.ssh/id_rsa')
+        private_key = read_openssh_private_key(key_file, password)
+        headers = {
+            'X-Nexus-UserId': self.api_key,
+            'X-Nexus-Sign': '1.0',
+        }
+        timestamp = canonical_time(datetime.now())
+        headers['X-Nexus-Timestamp'] = timestamp
+        body = 'grant_type=client_credentials'
+        hashed_body = base64.b64encode(hashlib.sha1(body).digest())
+        path = '/token'
+        hashed_path = base64.b64encode(hashlib.sha1(path).digest())
+        method = 'POST'
+        to_sign = ("Method:{0}\n"
+            "Hashed Path:{1}\n"
+            "X-Nexus-Content-Hash:{2}\n"
+            "X-Nexus-Timestamp:{3}\n"
+            "X-Nexus-UserId:{4}")
+        to_sign = to_sign.format(method,
+                hashed_path,
+                hashed_body,
+                headers['X-Nexus-Timestamp'],
+                headers['X-Nexus-UserId'])
+        print to_sign
+        value = rsa.sign(to_sign, private_key, 'SHA-256')
+        sig = b64encode(value)
+        string_sig = ""
+        for i, line in enumerate(sig):
+            string_sig = string_sig + line
+            headers['X-Nexus-Authorization-{0}'.format(i)] = line
+        url_parts = ('https', self.server, '/token', None, None)
+        url = urlparse.urlunsplit(url_parts)
+        response = requests.post(url, data={'grant_type':
+            'client_credentials'}, headers=headers, verify=self.verify_ssl)
+        return response
+
