@@ -137,7 +137,6 @@ class NexusClient(object):
                 hashed_body,
                 headers['X-Nexus-Timestamp'],
                 headers['X-Nexus-UserId'])
-        print to_sign
         value = rsa.sign(to_sign, private_key, 'SHA-256')
         sig = b64encode(value)
         string_sig = ""
@@ -148,5 +147,5 @@ class NexusClient(object):
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type':
             'client_credentials'}, headers=headers, verify=self.verify_ssl)
-        return response
+        return response.json
 
