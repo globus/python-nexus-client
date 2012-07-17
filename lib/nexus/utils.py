@@ -123,7 +123,7 @@ def sign_with_rsa(key_file, path, method, user_id, body='', query='', password=N
             hashed_query,
             headers['X-Nexus-Timestamp'],
             headers['X-Nexus-UserId'])
-    value = rsa.sign(to_sign, private_key, 'SHA-256')
+    value = rsa.sign(to_sign, private_key, 'SHA-1')
     sig = b64encode(value)
     for i, line in enumerate(sig):
         headers['X-Nexus-Authorization-{0}'.format(i)] = line
