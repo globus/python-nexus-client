@@ -95,7 +95,7 @@ def read_openssh_private_key(key_file, password=None):
         key_data = proc.communicate()[0]
     return rsa.PrivateKey.load_pkcs1(key_data)
 
-def sign_with_rsa(key_file, body, path, method, user_id, password=None):
+def sign_with_rsa(key_file, path, method, user_id, body='', query='', password=None):
     """
     Sign a request using the specified rsa key.
 
@@ -110,14 +110,17 @@ def sign_with_rsa(key_file, body, path, method, user_id, password=None):
     headers['X-Nexus-Timestamp'] = timestamp
     hashed_body = base64.b64encode(hashlib.sha1(body).digest())
     hashed_path =  base64.b64encode(hashlib.sha1(path).digest())
+    hashed_query = base64.b64encode(hashlib.sha1(query).digest())
     to_sign = ("Method:{0}\n"
         "Hashed Path:{1}\n"
         "X-Nexus-Content-Hash:{2}\n"
-        "X-Nexus-Timestamp:{3}\n"
-        "X-Nexus-UserId:{4}")
+        "X-Nexus-Query-Hash:{3}\n"
+        "X-Nexus-Timestamp:{4}\n"
+        "X-Nexus-UserId:{5}")
     to_sign = to_sign.format(method,
             hashed_path,
             hashed_body,
+            hashed_query,
             headers['X-Nexus-Timestamp'],
             headers['X-Nexus-UserId'])
     value = rsa.sign(to_sign, private_key, 'SHA-256')

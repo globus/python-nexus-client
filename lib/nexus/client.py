@@ -106,6 +106,26 @@ class NexusClient(object):
                 time.mktime(datetime.utcnow().timetuple()) + result.expires_in
                 )
 
+    def rsa_get_request_token(self, client_id, password=None):
+        key_file = self.config.get('private_key_file', '~/.ssh/id_rsa')
+        query_params = {
+                "response_type": "code",
+                "client_id": client_id
+                }
+        query_params = urllib.urlencode(query_params)
+        path = '/authorize'
+        method = 'GET'
+        headers = sign_with_rsa(key_file,
+                path,
+                method,
+                self.config['api_key'],
+                query=query_params,
+                password=password)
+        url_parts = ('https', self.server, '/authorize', query_params, None)
+        url = urlparse.urlunsplit(url_parts)
+        response = requests.get(url, headers=headers, verify=self.verify_ssl)
+        return response.json
+
     def request_client_credential(self, password=None):
         """
         This is designed to support section 4.4 of the OAuth 2.0 spec:
@@ -120,11 +140,11 @@ class NexusClient(object):
         path = '/token'
         method = 'POST'
         headers = sign_with_rsa(key_file,
-                body,
                 path,
                 method,
                 self.config['api_key'],
-                password)
+                body=body,
+                password=password)
         url_parts = ('https', self.server, path, None, None)
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type':

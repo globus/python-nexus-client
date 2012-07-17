@@ -23,3 +23,6 @@ else:
 
 #Get an access key for yourself using rsa:
 print client.request_client_credential()
+
+print "Get a request token using rsa authentication"
+print client.rsa_get_request_token('test')
