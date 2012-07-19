@@ -1,6 +1,6 @@
 VIRTUAL_ENV_DIR=vendor/python
 BOTO_VIRTUAL_ENV_DIR=vendor/boto
-PIP_CMD=PIP_DOWNLOAD_CACHE=vendor/cache $(VIRTUAL_ENV_DIR)/bin/pip install --no-deps -r 
+PIP_CMD=PIP_DOWNLOAD_CACHE=vendor/cache $(VIRTUAL_ENV_DIR)/bin/pip install --no-deps -i http://pypi.utils.globuscs.info/simple -r 
 DEPLOY_PIP_CMD=PIP_DOWNLOAD_CACHE=vendor/cache $(VIRTUAL_ENV_DIR)/bin/pip install --no-deps -r 
 
 .PHONY: build
