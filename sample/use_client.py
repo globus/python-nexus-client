@@ -1,4 +1,5 @@
 import os.path
+from getpass import getpass
 from nexus import Client
 
 # First instantiate a client object either with a dictionary or with a yaml file
@@ -22,7 +23,7 @@ else:
 
 
 #Get an access key for yourself using rsa:
-print client.request_client_credential()
+print client.request_client_credential(lambda: getpass("Private Key Password"))
 
 print "Get a request token using rsa authentication"
-print client.rsa_get_request_token(user)
+print client.rsa_get_request_token(user, lambda: getpass("Private Key Password"))

@@ -81,7 +81,7 @@ def read_openssh_public_key(key_file):
                 '-----END RSA PUBLIC KEY-----').format(encoded_string)
     return rsa.PublicKey.load_pkcs1(key_data)
 
-def read_openssh_private_key(key_file, password=None):
+def read_openssh_private_key(key_file, password_callback=None):
     """
     Given an openssh private key, return an rsa PrivateKey object
     """
@@ -89,6 +89,7 @@ def read_openssh_private_key(key_file, password=None):
     with open(abs_key_file, 'r') as file_handle:
         key_data = file_handle.read()
     if 'ENCRYPTED' in key_data:
+        password = password_callback()
         command = 'openssl rsa -passin pass:{0} -in {1}'
         proc = Popen(command.format(password, os.path.expanduser(key_file)),
                 stdout=PIPE, stderr=PIPE, shell=True)

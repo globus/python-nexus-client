@@ -115,7 +115,7 @@ class NexusClient(object):
                 "client_id": client_id
                 }
         query_params = urllib.urlencode(query_params)
-        path = '/authorize'
+        path = '/goauth/authorize'
         method = 'GET'
         headers = sign_with_rsa(key_file,
                 path,
