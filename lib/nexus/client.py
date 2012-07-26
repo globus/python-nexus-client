@@ -120,7 +120,7 @@ class NexusClient(object):
         headers = sign_with_rsa(key_file,
                 path,
                 method,
-                self.config['api_key'],
+                client_id,
                 query=query_params,
                 password=password)
         url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
