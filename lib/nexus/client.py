@@ -69,6 +69,8 @@ class NexusClient(object):
             log.exception("ValueError")
             return None
 
+        
+
     def generate_request_url(self, username=None):
         """
         In order for the user to authorize the client to access his data, he

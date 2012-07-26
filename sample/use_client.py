@@ -25,4 +25,4 @@ else:
 print client.request_client_credential()
 
 print "Get a request token using rsa authentication"
-print client.rsa_get_request_token('test')
+print client.rsa_get_request_token(user)
