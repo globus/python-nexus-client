@@ -1,4 +1,4 @@
-server: auth.sandbox.globuscs.info
+server: graph.api.go.sandbox.globuscs.info
 cache:
   class: 'nexus.token_utils.InMemoryCache'
 api_key: test
