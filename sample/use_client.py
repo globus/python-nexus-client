@@ -23,7 +23,7 @@ else:
 
 
 #Get an access key for yourself using rsa:
-print client.request_client_credential(lambda: getpass("Private Key Password"))
+print client.request_client_credential(user, lambda: getpass("Private Key Password"))
 
 print "Get a request token using rsa authentication"
 print client.rsa_get_request_token(user, lambda: getpass("Private Key Password"))

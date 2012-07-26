@@ -128,7 +128,7 @@ class NexusClient(object):
         response = requests.get(url, headers=headers, verify=self.verify_ssl)
         return response.json
 
-    def request_client_credential(self, password=None):
+    def request_client_credential(self, client_id, password=None):
         """
         This is designed to support section 4.4 of the OAuth 2.0 spec:
 
@@ -144,7 +144,7 @@ class NexusClient(object):
         headers = sign_with_rsa(key_file,
                 path,
                 method,
-                self.config['api_key'],
+                client_id,
                 body=body,
                 password=password)
         url_parts = ('https', self.server, path, None, None)
