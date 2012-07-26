@@ -17,7 +17,7 @@ class ClientTests(unittest.TestCase):
 
     def setUp(self):
         self.config = {
-                "authorize_url": "localhost:8080/authorize",
+                "authorize_url": "localhost:8080/goauth/authorize",
                 "cache": {
                     "class": "nexus.token_utils.InMemoryCache",
                     "args": []
@@ -56,7 +56,7 @@ class ClientTests(unittest.TestCase):
             return namedtuple('Request',
                     ['content'])(json.dumps({'pubkey':pubkey.save_pkcs1()}))
         self.replacer.replace('requests.get', get_cert)
-        token = 'un=test|SigningSubject=https://graph.api.globusonline.org/keys/test1|expiry={0}'
+        token = 'un=test|SigningSubject=https://graph.api.globusonline.org/goauth/keys/test1|expiry={0}'
         expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
         token = token.format(time.mktime(expires.timetuple()))
         sig = rsa.sign(token, privkey, 'SHA-1')
@@ -72,7 +72,7 @@ class ClientTests(unittest.TestCase):
     @attr('unit')
     def test_generate_request_url(self):
         client = Client(self.config)
-        expected = "https://graph.api.globusonline.org/authorize?response_type=code&client_id=I+am+not+a+key"
+        expected = "https://graph.api.globusonline.org/goauth/authorize?response_type=code&client_id=I+am+not+a+key"
         self.assertEqual(expected, client.generate_request_url())
 
     @attr('unit')

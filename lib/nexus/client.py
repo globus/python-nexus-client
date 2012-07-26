@@ -84,7 +84,7 @@ class NexusClient(object):
                 }
         if username is not None:
             query_params['username'] = username
-        parts = ('https', self.server, '/authorize',
+        parts = ('https', self.server, '/goauth/authorize',
                 urllib.urlencode(query_params), None)
         return urlparse.urlunsplit(parts)
 
@@ -97,7 +97,7 @@ class NexusClient(object):
 
         :return: Tuple containing (access_token, refresh_token, expire_time)
         """
-        url_parts = ('https', self.server, '/token', None, None)
+        url_parts = ('https', self.server, '/goauth/token', None, None)
         result = token_utils.request_access_token(self.api_key,
                 self.api_secret, code, urlparse.urlunsplit(url_parts))
         return (
@@ -121,7 +121,7 @@ class NexusClient(object):
                 self.config['api_key'],
                 query=query_params,
                 password=password)
-        url_parts = ('https', self.server, '/authorize', query_params, None)
+        url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
         url = urlparse.urlunsplit(url_parts)
         response = requests.get(url, headers=headers, verify=self.verify_ssl)
         return response.json
@@ -137,7 +137,7 @@ class NexusClient(object):
         """
         key_file = self.config.get('private_key_file', '~/.ssh/id_rsa')
         body = 'grant_type=client_credentials'
-        path = '/token'
+        path = '/goauth/token'
         method = 'POST'
         headers = sign_with_rsa(key_file,
                 path,
