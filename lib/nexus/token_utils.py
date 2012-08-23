@@ -119,7 +119,7 @@ def validate_token(token, cache=InMemoryCache(), verify=True):
     for entry in unencoded_token.split('|'):
         key, value = entry.split('=')
         token_map[key] = value
-    subject_hash = hashlib.md5(token_map['SigningSubject']).hexdigest()
+    subject_hash = hashlib.sha512(token_map['SigningSubject']).hexdigest()
     if not cache.has_public_key(subject_hash):
         key_struct = requests.get(token_map['SigningSubject'], verify=verify).content
         public_key = json.loads(key_struct)['pubkey']
