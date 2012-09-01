@@ -1,7 +1,7 @@
-server: graph.api.go.sandbox.globuscs.info
+server: graph.api.local.globuscs.info
 cache:
   class: 'nexus.token_utils.InMemoryCache'
-api_key: test
-api_secret: m6fxo4x0wzx8ojrm62ksmn8mojlxqccw
-private_key_file: ./sample/dummy_key
+client: test
+client_secret: m6fxo4x0wzx8ojrm62ksmn8mojlxqccw
+user_private_key_file: ./sample/dummy_key
 verify_ssl: false

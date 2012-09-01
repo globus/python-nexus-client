@@ -15,15 +15,27 @@ token = raw_input("Please copy the resulting code here: ")
 # result will contain the token in the "code" field.  Paste that here.
 
 # Validate the token:
-user = client.authenticate_user(token)
-if user is not None:
+try:
+    user, clientid, nexus_host = client.validate_token(token)
     print "Yup, you are {0}".format(user)
-else:
+except:
     print "That is not a valid authorization code"
 
-
-#Get an access key for yourself using rsa:
+print("As " + user + ", get an access key for yourself using rsa:")
 print client.request_client_credential(user, lambda: getpass("Private Key Password"))
 
-print "Get a request token using rsa authentication"
-print client.rsa_get_request_token(user, lambda: getpass("Private Key Password"))
+print("As " + user + ", get a request token for client " + client.client + " using rsa authentication:")
+response = client.rsa_get_request_token(user, client.client, lambda: getpass("Private Key Password"))
+print response
+
+print("As " + client.client + ", get an access key from code:")
+access_token, refresh_token, expires_in = client.get_access_token_from_code(response['code'])
+print access_token
+
+print("Validate access token:")
+user, clientid, nexus_host = client.validate_token(access_token)
+print(nexus_host + " claims this is a valid token issued by " + user + " for " + clientid)
+
+print("Use access token to act as " + user + ":")
+response = client.get_user_using_access_token(access_token)
+print response
