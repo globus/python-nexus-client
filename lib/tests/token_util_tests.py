@@ -7,6 +7,7 @@ import tempfile
 import time
 import urllib
 import unittest
+from collections import namedtuple
 
 import requests
 
@@ -31,7 +32,7 @@ class TestTokenUtils(unittest.TestCase):
         cert_url = 'http://tester.com/cert1'
 
         expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
-        unsigned_token = "un=test|expiry={0}|SigningSubject={1}|expiry={2}".format(expiry,
+        unsigned_token = "un=test|clientid=test|expiry={0}|SigningSubject={1}|expiry={2}".format(expiry,
                 cert_url, time.mktime(expires.timetuple()))
         unsigned_token = unsigned_token
         pub_key, priv_key = key.newkeys(1024)
@@ -43,14 +44,17 @@ class TestTokenUtils(unittest.TestCase):
             encoded_sig)
         response = requests.Response()
         response._content = json.dumps({'pubkey':pub_key.save_pkcs1()})
-        self.replacer.replace('requests.get', lambda *args, **kwargs: response)
+        def get_cert(*args, **kwargs):
+            return namedtuple('Request',
+                    ['content', 'status_code'])(json.dumps({'pubkey':pub_key.save_pkcs1()}), 200)
+        self.replacer.replace('requests.get', get_cert)
 
         token_utils.validate_token(signed_token)
         shutil.rmtree(tmp_dir)
 
     def test_request_access_token(self):
         response = requests.Response()
-        response.status_code = requests.codes.ok
+        response.status_code = requests.codes.created
         access_token = {
                 "access_token": "faohwefadfawaw",
                 "refresh_token": "fhajhkjbhrafw",

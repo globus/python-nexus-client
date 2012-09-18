@@ -43,8 +43,9 @@ class NexusClient(object):
                     'class': 'nexus.token_utils.InMemoryCache',
                     'args': [],
                     })
-        self.api_key = self.config['api_key']
-        self.api_secret = self.config['api_secret']
+        self.client = self.config['client']
+        self.client_secret = self.config['client_secret']
+        self.user_key_file = self.config.get('user_private_key_file', '~/.ssh/id_rsa')
         cache_class = cache_config['class']
         self.verify_ssl = self.config.get('verify_ssl', True)
         mod_name = '.'.join(cache_class.split('.')[:-1])
@@ -55,21 +56,20 @@ class NexusClient(object):
         self.cache = cache_impl_class(*cache_config.get('args', []))
         self.cache = token_utils.LoggingCacheWrapper(self.cache)
 
-    def authenticate_user(self, token):
+    def validate_token(self, token):
         """
-        Authenticate a user based on the token they provide.
+        Validate that a token was issued for the specified user and client by
+        the server in the SigningSubject.
 
         :param token: An authentication token provided by the client.
 
-        :return: True if the authentication is valid, else False
-        """
-        try:
-            return token_utils.validate_token(token, self.cache, self.verify_ssl)
-        except ValueError:
-            log.exception("ValueError")
-            return None
-
+        :return: username, client id and the server that issued the token.
         
+        :raises ValueError: If the signature is invalid, the token is expired or
+        the public key could not be gotten.
+        """
+        return token_utils.validate_token(token, self.cache, self.verify_ssl)
+
 
     def generate_request_url(self, username=None):
         """
@@ -82,7 +82,7 @@ class NexusClient(object):
         """
         query_params = {
                 "response_type": "code",
-                "client_id": self.api_key,
+                "client_id": self.client,
                 }
         if username is not None:
             query_params['username'] = username
@@ -100,16 +100,15 @@ class NexusClient(object):
         :return: Tuple containing (access_token, refresh_token, expire_time)
         """
         url_parts = ('https', self.server, '/goauth/token', None, None)
-        result = token_utils.request_access_token(self.api_key,
-                self.api_secret, code, urlparse.urlunsplit(url_parts))
+        result = token_utils.request_access_token(self.client,
+                self.client_secret, code, urlparse.urlunsplit(url_parts))
         return (
                 result.access_token,
                 result.refresh_token,
                 time.mktime(datetime.utcnow().timetuple()) + result.expires_in
                 )
 
-    def rsa_get_request_token(self, client_id, password=None):
-        key_file = self.config.get('private_key_file', '~/.ssh/id_rsa')
+    def rsa_get_request_token(self, username, client_id, password=None):
         query_params = {
                 "response_type": "code",
                 "client_id": client_id
@@ -117,10 +116,10 @@ class NexusClient(object):
         query_params = urllib.urlencode(query_params)
         path = '/goauth/authorize'
         method = 'GET'
-        headers = sign_with_rsa(key_file,
+        headers = sign_with_rsa(self.user_key_file,
                 path,
                 method,
-                client_id,
+                username,
                 query=query_params,
                 password=password)
         url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
@@ -137,11 +136,10 @@ class NexusClient(object):
          client is requesting access to the protected resources under its
          control"
         """
-        key_file = self.config.get('private_key_file', '~/.ssh/id_rsa')
         body = 'grant_type=client_credentials'
         path = '/goauth/token'
         method = 'POST'
-        headers = sign_with_rsa(key_file,
+        headers = sign_with_rsa(self.user_key_file,
                 path,
                 method,
                 client_id,
@@ -149,7 +147,18 @@ class NexusClient(object):
                 password=password)
         url_parts = ('https', self.server, path, None, None)
         url = urlparse.urlunsplit(url_parts)
-        response = requests.post(url, data={'grant_type':
-            'client_credentials'}, headers=headers, verify=self.verify_ssl)
+        response = requests.post(url, data={'grant_type': 'client_credentials'}, headers=headers, verify=self.verify_ssl)
         return response.json
 
+    def get_user_using_access_token(self, access_token):
+        access_token_dict = dict(field.split('=') for field in access_token.split('|'))
+        user_path = '/users/' + access_token_dict['un']
+        url_parts = ('https', self.server, user_path, None, None)
+        url = urlparse.urlunsplit(url_parts)
+        headers = { 
+            "X-Globus-Goauthtoken": str(access_token),
+            "Content-Type": "application/json"
+        }
+        response = requests.get(url, headers=headers, verify=self.verify_ssl)
+        assert(response.status_code == requests.codes.ok)
+        return response.json
