@@ -1,3 +1,18 @@
+"""
+REST client for the Globus Online identity management service (Globus Nexus).
+
+Supports three methods of authentication:
+    - username and password
+    - oauth (deprecated)
+    - goauth (new oauth based authentication service)
+
+Username and password may be appropriate for testing, but goauth is the
+recommended auth method going forward. Use nexus.client.NexusClient
+request_client_credential or get_access_token_from_code to obtain an
+access token.
+
+TODO: refactor and merge with NexusClient.
+"""
 __author__ = 'Mattias Lidman'
 
 import logging
