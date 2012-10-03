@@ -12,7 +12,8 @@ class GlobusOnlineRestClient():
     # NOTE: GraphRestClient would be more accurate, but if we want to release 
     # this publically GlobusOnlineRestClient is probably a more pedagogical name.
 
-    def __init__(self, go_host, username=None, password=None, oauth_secret=None):
+    def __init__(self, go_host, username=None, password=None,
+                 oauth_secret=None, goauth_token=None):
         # Initial login supported either using username+password or
         # username+oauth_secret. The client also supports unauthenticated calls.
         if not go_host.startswith('http'):
@@ -20,12 +21,15 @@ class GlobusOnlineRestClient():
             go_host = 'https://' + go_host
         self.go_host = go_host
         self.oauth_secret = oauth_secret
+        self.goauth_token = goauth_token
         self.session_cookies = {}
         self.default_password = 'sikrit' # Don't tell anyone.
         self.current_user = None
         if username:
             if oauth_secret:
                 self.username_oauth_secret_login(username, oauth_secret)
+            elif goauth_token:
+                self.username_goauth_token_login(username, goauth_token)
             else:
                 self.username_password_login(username, password=password)
 
@@ -360,6 +364,17 @@ class GlobusOnlineRestClient():
             self.current_user = old_current_user
         return response, content
 
+    def username_goauth_token_login(self, username, goauth_token):
+        old_goauth_token = self.goauth_token
+        old_current_user = self.current_user
+        self.goauth_token = goauth_token
+        self.current_user = username
+        response, content = self.get_user(username)
+        if response['status'] != '200':
+            self.goauth_token = old_goauth_token
+            self.current_user = old_current_user
+        return response, content
+
     def logout(self):
         response, content = self._issue_rest_request('/logout')
         self.current_user = None
@@ -410,6 +425,10 @@ class GlobusOnlineRestClient():
             auth_headers = self._get_auth_headers(http_method, url)
             # Merge dicts. In case of a conflict items in headers take precedence.
             headers = dict(auth_headers.items() + headers.items())
+        elif self.current_user and self.goauth_token:
+            headers["Authorization"] = "Globus-Goauthtoken %s" \
+                                       % self.goauth_token
+
         body = None
         if params:
             if content_type == 'application/x-www-form-urlencoded':
