@@ -152,7 +152,7 @@ def validate_token(token, cache=InMemoryCache(), verify=True):
     urlparts = urlparse.urlparse(token_map['SigningSubject'])
     return (
         token_map['un'],
-        token_map['clientid'],
+        token_map['client_id'],
         urlparts.hostname
     )
 
