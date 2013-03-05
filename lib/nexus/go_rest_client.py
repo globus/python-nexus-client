@@ -49,10 +49,24 @@ class GlobusOnlineRestClient():
                 self.username_password_login(username, password=password)
 
     # GROUP OPERATIONS
-    def get_group_list(self, root_id=None, depth=1):
-        root_id_str = '' if not root_id else str(root_id)
-        depth_str = '' if not depth else str(depth)
-        url = '/groups/list?depth=' + depth_str + '&root=' + root_id_str 
+    def get_group_list(self, my_roles=None, my_statuses=None):
+        # Get the groups list resource.
+        # Filtering supported by passing a list of roles (admin/manager/member) as
+        # my_roles or a list of statuses (active/invited/pending/suspended/rejected)
+        # as my_statuses. Negative filtering supported by prepending a status or role
+        # with '!'.
+        group_filter = self._construct_group_filter(my_roles, my_statuses)
+        url = '/groups?' + group_filter
+        return self._issue_rest_request(url)
+
+    def get_group_tree(self, root_gid, depth, my_roles=None, my_statuses=None):
+        # Get the groups tree resource.
+        # Filtering supported by passing a list of roles (admin/manager/member) as
+        # my_roles or a list of statuses (active/invited/pending/suspended/rejected)
+        # as my_statuses. Negative filtering supported by prepending a status or role
+        # with '!'.
+        group_filter = self._construct_group_filter(my_roles, my_statuses)
+        url = '/groups/' + root_gid + '/tree?depth=' + str(depth) + '&' + group_filter
         return self._issue_rest_request(url)
 
     def get_group_summary(self, gid):
@@ -423,6 +437,21 @@ class GlobusOnlineRestClient():
             }
         return policies
 
+    def _construct_group_filter(self, my_roles, my_statuses):
+        params = {}
+        statuses = set(['active', 'invited', 'pending', 'suspended', 'rejected',
+            '!active', '!invited', '!pending', '!suspended', '!rejected'])
+        roles = set(['admin', 'manager', 'member', '!admin', '!manager', '!member'])
+        if my_roles:
+            if len(set(my_roles) - roles) != 0:
+                raise ValueError('Invalid roles:' + str(set(my_roles) - roles))
+            params['my_roles'] = ",".join(my_roles)
+        if my_statuses:
+            if len(set(my_statuses) - statuses) != 0:
+                raise ValueError('Invalid statuses:' + str(set(my_statuses) - statuses))
+            params['my_statuses'] = ",".join(my_statuses)
+        return urllib.urlencode(params)
+
     def _issue_rest_request(self, path, http_method='GET', content_type='application/json',
         accept='application/json', params=None, use_session_cookies=False):
         
@@ -454,7 +483,7 @@ class GlobusOnlineRestClient():
         
         if response.has_key('set-cookie'):
             self.session_cookies = response['set-cookie']
-        if 'application/json' in response['content-type'] and content != '':
+        if 'content-type' in response and 'application/json' in response['content-type'] and content != '':
             return response, json.loads(content)
         else:
             return response, {}
