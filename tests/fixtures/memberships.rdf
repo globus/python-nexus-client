@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY users "http://www.globusonline.org/rdf/users#" >
+    <!ENTITY groups "http://www.globusonline.org/rdf/groups#" >
+    <!ENTITY actions "http://www.globusonline.org/rdf/actions#" >
+    <!ENTITY globus_classes "http://www.globusonline.org/rdf/classes#" >
+    <!ENTITY policies "http://www.globusonline.org/rdf/policies#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY policy "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiPolicy.owl#" >
+    <!ENTITY entity "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiEntity.owl#" >
+    <!ENTITY action "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiAction.owl#" >
+    <!ENTITY deontic "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiDeontic.owl#" >
+    <!ENTITY constraint "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiConstraint.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.globusonline.org/rdf/"
+     xml:base="http://www.globusonline.org/rdf/"
+     xmlns:users="http://www.globusonline.org/rdf/users#"
+     xmlns:ace="http://www.globusonline.org/rdf/ace#"
+     xmlns:acl="http://www.globusonline.org/rdf/acl#"
+     xmlns:entity="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiEntity.owl#"
+     xmlns:constraint="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiConstraint.owl#"
+     xmlns:deontic="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiDeontic.owl#"
+     xmlns:policies="http://www.globusonline.org/rdf/policies#"
+     xmlns:memberships="http://www.globusonline.org/rdf/memberships#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:globus_classes="http://www.globusonline.org/rdf/classes#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:action="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiAction.owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:policy="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiPolicy.owl#"
+     xmlns:actions="http://www.globusonline.org/rdf/actions#"
+     xmlns:policy_option_type="http://www.globusonline.org/rdf/policy_option_type#"
+     xmlns:email_templates="http://www.globusonline.org/rdf/email_templates#"
+     xmlns:policy_option="http://www.globusonline.org/rdf/policy_option#"
+     xmlns:template_message_part="http://www.globusonline.org/rdf/template_message_part#"
+     xmlns:groups="http://www.globusonline.org/rdf/groups#">
+
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#769de564ae19beaee18b401c6d9347193f5635a44334c18da7e664cc7f83de898a227840bf6e3d61fe647f33db9066032609e97f1ca50763a3c536523754f0a8">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#a5f01b6f-820c-487c-ba57-82c9b7485b47"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#057d6a1fe9833013ebfed77a97ea0ef3fb86d623e91c17b944b34b0b7cfa1232661defc47c7f058e3dcbccb770f462e35891655d247a40472c1ab67b3051e20c">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#4b8b01db-1c7a-4524-a910-6ac539d8fe02"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#b67527e8-82d0-4ab2-86e4-81332a59bc9b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#527a3b4b-5740-4d27-b9d8-f2bca58c4a68"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#34cb50ca-a2b2-4235-ac3a-f33922ce9feb"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#6cc01642-bf81-4385-a2af-4dc1cf42e7f3"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#1f4820fb-818a-4a25-afb7-1b5ddb3ab684"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#64978c62-8daa-4097-9982-21dbf6e34a3e"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#035e3eb6-3116-4ea6-a5c7-be92ed524428"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#05e6d338-f088-4a07-b814-71e63ebd78c4"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#a73422d4-15e3-430d-a586-eed24f54f0e4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#d20aef71359c519bcfcd5a71f78fcfd029d323e49b4cb9f932d9ecd4852226439bd3dc8e4104615688dcdcebb666b1dd823952125375e4380ebbe3115e16264f">
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#2e5aa287a27a9722cc5af01ec71c7d1ab4477d6abfdbb954d11a07c101861acacebe463be25aaf735e3875a2a3c2dde59e43b6315b447d78a9bc4d71a08249ba">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#8dd17481-68d6-4f50-83ac-32fa0b91c44d"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#fc685d2b-75f4-4dae-b512-b325791f3323"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#bd7ba8d8ab5ffd2d77fb0512a72f65bec8e6061ec6f73d99fc15aed6cf47b8642f668a54885881fbf72abfaa64c0d0ab1336eb5dde319ae29a4a680bdc8280b2">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#2d198313-99d8-49fc-8c52-de85a4064059"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#c0b20424880ab2e1b156a8cdc6a64607594c503ceb2a6cb44f7f5193931f63ea864f190c9c0efcb1fef141c1834d652833a1ecc8d2ff9df9f5d26764066065b4">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#02f3b698-b02d-450b-9a37-78667e1a32fd"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/users#de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529">
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#76f30367-69f8-4b80-a3c6-df872c4838a2"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#53c6ddb3-bfcc-47c7-833c-64502d27835a"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#c2152550-b5ea-4044-846e-939efc359e83"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#3f9eb600-412f-4346-9ecf-af50933353f3"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#0b34c17e-ff67-437a-83c2-d3ef2123ba13"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#9b4eecfb-adf3-4bf8-9d73-fa407566f44a"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#c94ed344-f4b1-427b-9094-1a178b3059e5"/>
+    <user_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#26a8406e-876f-436b-beda-9123616f24b0"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#c808771d-fb3b-4180-8310-ebf8ba80ff40">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#53c6ddb3-bfcc-47c7-833c-64502d27835a"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#05e6d338-f088-4a07-b814-71e63ebd78c4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#e32a248b-f377-48be-994a-6d587e7911d8">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#3f9eb600-412f-4346-9ecf-af50933353f3"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#a73422d4-15e3-430d-a586-eed24f54f0e4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#27c0b7e4-260a-425b-8eb9-9637be7a4f3c">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#035e3eb6-3116-4ea6-a5c7-be92ed524428"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#c2152550-b5ea-4044-846e-939efc359e83"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#34951220-ad51-407d-8502-f83168834ece">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#9b4eecfb-adf3-4bf8-9d73-fa407566f44a"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#a5f01b6f-820c-487c-ba57-82c9b7485b47"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#02f3b698-b02d-450b-9a37-78667e1a32fd"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#2d198313-99d8-49fc-8c52-de85a4064059"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#8dd17481-68d6-4f50-83ac-32fa0b91c44d"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#4b8b01db-1c7a-4524-a910-6ac539d8fe02"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#34cb50ca-a2b2-4235-ac3a-f33922ce9feb"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#703c2b12-615c-40fb-9814-2927656cdc83">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#76f30367-69f8-4b80-a3c6-df872c4838a2"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#527a3b4b-5740-4d27-b9d8-f2bca58c4a68"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#41f4f56f-4dcd-4978-94d5-bae9cb0081cf">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#64978c62-8daa-4097-9982-21dbf6e34a3e"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#c94ed344-f4b1-427b-9094-1a178b3059e5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#aa3ac3b6-8743-47ae-9a4a-543506f921f1">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#26a8406e-876f-436b-beda-9123616f24b0"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#1f4820fb-818a-4a25-afb7-1b5ddb3ab684"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#fc685d2b-75f4-4dae-b512-b325791f3323"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#b67527e8-82d0-4ab2-86e4-81332a59bc9b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#da41fe35-f625-452b-8ce9-10d2f42adc82">
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#6cc01642-bf81-4385-a2af-4dc1cf42e7f3"/>
+    <group_in_membership rdf:resource="http://www.globusonline.org/rdf/memberships#0b34c17e-ff67-437a-83c2-d3ef2123ba13"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#c2152550-b5ea-4044-846e-939efc359e83">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>27c0b7e4-260a-425b-8eb9-9637be7a4f3c</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#a5f01b6f-820c-487c-ba57-82c9b7485b47">
+    <status>active</status>
+    <username>eugene</username>
+    <role>member</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>769de564ae19beaee18b401c6d9347193f5635a44334c18da7e664cc7f83de898a227840bf6e3d61fe647f33db9066032609e97f1ca50763a3c536523754f0a8</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#527a3b4b-5740-4d27-b9d8-f2bca58c4a68">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>703c2b12-615c-40fb-9814-2927656cdc83</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#4b8b01db-1c7a-4524-a910-6ac539d8fe02">
+    <status>invited</status>
+    <username>dan</username>
+    <role>member</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>057d6a1fe9833013ebfed77a97ea0ef3fb86d623e91c17b944b34b0b7cfa1232661defc47c7f058e3dcbccb770f462e35891655d247a40472c1ab67b3051e20c</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#26a8406e-876f-436b-beda-9123616f24b0">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>aa3ac3b6-8743-47ae-9a4a-543506f921f1</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#c94ed344-f4b1-427b-9094-1a178b3059e5">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>41f4f56f-4dcd-4978-94d5-bae9cb0081cf</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#2d198313-99d8-49fc-8c52-de85a4064059">
+    <status>rejected</status>
+    <username>steve</username>
+    <role>member</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>bd7ba8d8ab5ffd2d77fb0512a72f65bec8e6061ec6f73d99fc15aed6cf47b8642f668a54885881fbf72abfaa64c0d0ab1336eb5dde319ae29a4a680bdc8280b2</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#64978c62-8daa-4097-9982-21dbf6e34a3e">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>41f4f56f-4dcd-4978-94d5-bae9cb0081cf</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#53c6ddb3-bfcc-47c7-833c-64502d27835a">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>admin</role>
+    <group_key>c808771d-fb3b-4180-8310-ebf8ba80ff40</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#1f4820fb-818a-4a25-afb7-1b5ddb3ab684">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>aa3ac3b6-8743-47ae-9a4a-543506f921f1</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#a73422d4-15e3-430d-a586-eed24f54f0e4">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>e32a248b-f377-48be-994a-6d587e7911d8</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#02f3b698-b02d-450b-9a37-78667e1a32fd">
+    <status>pending</status>
+    <username>pzich</username>
+    <role>member</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>c0b20424880ab2e1b156a8cdc6a64607594c503ceb2a6cb44f7f5193931f63ea864f190c9c0efcb1fef141c1834d652833a1ecc8d2ff9df9f5d26764066065b4</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#34cb50ca-a2b2-4235-ac3a-f33922ce9feb">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#9b4eecfb-adf3-4bf8-9d73-fa407566f44a">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#6cc01642-bf81-4385-a2af-4dc1cf42e7f3">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>da41fe35-f625-452b-8ce9-10d2f42adc82</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#05e6d338-f088-4a07-b814-71e63ebd78c4">
+    <status>active</status>
+    <username>kyle</username>
+    <role>owner</role>
+    <group_key>c808771d-fb3b-4180-8310-ebf8ba80ff40</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#76f30367-69f8-4b80-a3c6-df872c4838a2">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>703c2b12-615c-40fb-9814-2927656cdc83</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#035e3eb6-3116-4ea6-a5c7-be92ed524428">
+    <status>active</status>
+    <username>kyle</username>
+    <role>admin</role>
+    <group_key>27c0b7e4-260a-425b-8eb9-9637be7a4f3c</group_key>
+    <user_key>b9f480c5fb67e786dbe5737d35d073096b031b5dcdd141f62ee2dbf3cb7eaa7581331d6e23292efe60d09a049f0283798458a2c49faad04f267bf687a031d33f</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#0b34c17e-ff67-437a-83c2-d3ef2123ba13">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>da41fe35-f625-452b-8ce9-10d2f42adc82</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#fc685d2b-75f4-4dae-b512-b325791f3323">
+    <status>active</status>
+    <username>trhowe</username>
+    <role>admin</role>
+    <group_key>aa3ac3b6-8743-47ae-9a4a-543506f921f1</group_key>
+    <user_key>2e5aa287a27a9722cc5af01ec71c7d1ab4477d6abfdbb954d11a07c101861acacebe463be25aaf735e3875a2a3c2dde59e43b6315b447d78a9bc4d71a08249ba</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#b67527e8-82d0-4ab2-86e4-81332a59bc9b">
+    <status>invited</status>
+    <username>dan</username>
+    <role>member</role>
+    <group_key>aa3ac3b6-8743-47ae-9a4a-543506f921f1</group_key>
+    <user_key>057d6a1fe9833013ebfed77a97ea0ef3fb86d623e91c17b944b34b0b7cfa1232661defc47c7f058e3dcbccb770f462e35891655d247a40472c1ab67b3051e20c</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#8dd17481-68d6-4f50-83ac-32fa0b91c44d">
+    <status>active</status>
+    <username>trhowe</username>
+    <role>member</role>
+    <group_key>34951220-ad51-407d-8502-f83168834ece</group_key>
+    <user_key>2e5aa287a27a9722cc5af01ec71c7d1ab4477d6abfdbb954d11a07c101861acacebe463be25aaf735e3875a2a3c2dde59e43b6315b447d78a9bc4d71a08249ba</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/memberships#3f9eb600-412f-4346-9ecf-af50933353f3">
+    <status>active</status>
+    <username>jbryan</username>
+    <role>owner</role>
+    <group_key>e32a248b-f377-48be-994a-6d587e7911d8</group_key>
+    <user_key>de8bcf142c2cb8388cc868885c11784e1e465b30c4907b5c6760af95a1b7ca58dc36c669e7d8ef2351b71c69d5052dc31359c58047fc3fb79ad034d73906b529</user_key>
+    <last_changed>2011-03-05T00:00:00</last_changed>
+  </rdf:Description>
+</rdf:RDF>

@@ -1,0 +1,10 @@
+{
+    "user_name": "steve", 
+    "full_name": "Steve Tuecke", 
+    "email": "steve@example.com",
+    "opt_in": true,
+	"password" : "blah",
+    "email_validated" : true,
+	"admin"        : true,
+    "secret" : "secret"
+}

@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY users "http://www.globusonline.org/rdf/users#" >
+    <!ENTITY groups "http://www.globusonline.org/rdf/groups#" >
+    <!ENTITY actions "http://www.globusonline.org/rdf/actions#" >
+    <!ENTITY globus_classes "http://www.globusonline.org/rdf/classes#" >
+    <!ENTITY policies "http://www.globusonline.org/rdf/policies#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY policy "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiPolicy.owl#" >
+    <!ENTITY entity "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiEntity.owl#" >
+    <!ENTITY action "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiAction.owl#" >
+    <!ENTITY deontic "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiDeontic.owl#" >
+    <!ENTITY constraint "http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiConstraint.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.globusonline.org/rdf/"
+     xml:base="http://www.globusonline.org/rdf/"
+     xmlns:users="http://www.globusonline.org/rdf/users#"
+     xmlns:entity="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiEntity.owl#"
+     xmlns:constraint="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiConstraint.owl#"
+     xmlns:deontic="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiDeontic.owl#"
+     xmlns:policies="http://www.globusonline.org/rdf/policies#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:globus_classes="http://www.globusonline.org/rdf/classes#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:action="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiAction.owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:policy="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiPolicy.owl#"
+     xmlns:actions="http://www.globusonline.org/rdf/actions#"
+     xmlns:groups="http://www.globusonline.org/rdf/groups#">
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="&constraint;predicate"/>
+    <owl:AnnotationProperty rdf:about="&deontic;actor"/>
+    <owl:AnnotationProperty rdf:about="&deontic;action"/>
+    <owl:AnnotationProperty rdf:about="&action;actor"/>
+    <owl:AnnotationProperty rdf:about="&action;target"/>
+    <owl:AnnotationProperty rdf:about="&policy;desc"/>
+    <owl:AnnotationProperty rdf:about="&constraint;subject"/>
+    <owl:AnnotationProperty rdf:about="&constraint;object"/>
+    <owl:AnnotationProperty rdf:about="&policy;actor"/>
+    <owl:AnnotationProperty rdf:about="&deontic;target"/>
+    <owl:AnnotationProperty rdf:about="&policy;grants"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiAction.owl#Action -->
+
+    <owl:Class rdf:about="&action;Action"/>
+    
+
+
+    <!-- http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiConstraint.owl#SimpleConstraint -->
+
+    <owl:Class rdf:about="&constraint;SimpleConstraint"/>
+    
+
+
+    <!-- http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiDeontic.owl#Permission -->
+
+    <owl:Class rdf:about="&deontic;Permission"/>
+    
+
+
+    <!-- http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiEntity.owl#Variable -->
+
+    <owl:Class rdf:about="&entity;Variable"/>
+    
+
+
+    <!-- http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiPolicy.owl#Policy -->
+
+    <owl:Class rdf:about="&policy;Policy"/>
+    
+
+
+    <!-- http://www.globusonline.org/rdf/classes#View -->
+
+    <owl:Class rdf:about="&globus_classes;View">
+        <rdfs:subClassOf rdf:resource="&action;Action"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.globusonline.org/rdf/policies#GlobusPolicy -->
+
+    <owl:NamedIndividual rdf:about="&policies;GlobusPolicy">
+        <rdf:type rdf:resource="&policy;Policy"/>
+        <policy:grants rdf:resource="&policies;PermViewGroup41f4f56f4dcd497894d5bae9cb0081cf"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.globusonline.org/rdf/policies#IsMemberOfGroup -->
+
+    <owl:NamedIndividual rdf:about="&policies;IsMemberOfGroup">
+        <rdf:type rdf:resource="&constraint;SimpleConstraint"/>
+        <policy:desc>All members of group</policy:desc>
+        <constraint:object rdf:resource="&policies;actor_var"/>
+        <constraint:subject rdf:resource="&policies;target_var"/>
+        <constraint:predicate rdf:resource="http://www.globusonline.org/rdf/memberships"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.globusonline.org/rdf/policies#PermViewGroup41f4f56f4dcd497894d5bae9cb0081cf -->
+
+    <owl:NamedIndividual rdf:about="&policies;PermViewGroup41f4f56f4dcd497894d5bae9cb0081cf">
+        <rdf:type rdf:resource="&deontic;Permission"/>
+        <policy:desc>Permission to use StudentCSPrinting actions</policy:desc>
+        <deontic:actor rdf:resource="&policies;actor_var"/>
+        <deontic:action rdf:resource="&policies;view57b451c3e5b649b29c2adf831219ae0c"/>
+        <deontic:constraint rdf:resource="&policies;IsMemberOfGroup"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.globusonline.org/rdf/policies#actor_var -->
+
+    <owl:NamedIndividual rdf:about="&policies;actor_var">
+        <rdf:type rdf:resource="&entity;Variable"/>
+        <policy:desc>A variable to hold the place of an actor.</policy:desc>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.globusonline.org/rdf/policies#target_var -->
+
+    <owl:NamedIndividual rdf:about="&policies;target_var">
+        <rdf:type rdf:resource="&entity;Variable"/>
+        <policy:desc>A variable to hold the place of a group.</policy:desc>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.globusonline.org/rdf/policies#view57b451c3e5b649b29c2adf831219ae0c -->
+
+    <owl:NamedIndividual rdf:about="&policies;view57b451c3e5b649b29c2adf831219ae0c">
+        <rdf:type rdf:resource="&globus_classes;View"/>
+        <action:target rdf:resource="&groups;41f4f56f-4dcd-4978-94d5-bae9cb0081cf"/>
+        <action:actor rdf:resource="&policies;actor_var"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.2.3.22702) http://owlapi.sourceforge.net -->
+

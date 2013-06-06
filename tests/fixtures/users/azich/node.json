@@ -1,0 +1,10 @@
+{
+    "user_name": "azich", 
+    "full_name": "Andrew Zich", 
+    "email": "azich@gmail.com",
+    "opt_in": true,
+	"password" : "blah",
+    "email_validated" : true,
+	"admin"        : true,
+    "secret" : "secret"
+}

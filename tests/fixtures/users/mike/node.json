@@ -1,0 +1,10 @@
+{
+    "user_name": "mike", 
+    "full_name": "Mike Russell", 
+	"password" : "blah",
+    "email": "mike@example.org",
+    "opt_in": false,
+    "email_validated" : false,
+	"admin"        : false,
+    "secret" : "secret"
+}

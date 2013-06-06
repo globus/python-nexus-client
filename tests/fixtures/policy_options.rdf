@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns="http://www.globusonline.org/rdf/"
+     xml:base="http://www.globusonline.org/rdf/"
+     xmlns:users="http://www.globusonline.org/rdf/users#"
+     xmlns:entity="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiEntity.owl#"
+     xmlns:constraint="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiConstraint.owl#"
+     xmlns:deontic="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiDeontic.owl#"
+     xmlns:policies="http://www.globusonline.org/rdf/policies#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:globus_classes="http://www.globusonline.org/rdf/classes#"
+     xmlns:policy_option_type="http://www.globusonline.org/rdf/policy_option_type#"
+     xmlns:policy_option="http://www.globusonline.org/rdf/policy_option#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:action="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiAction.owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:policy="http://www.cs.umbc.edu/~lkagal1/rei/ontologies/ReiPolicy.owl#"
+     xmlns:actions="http://www.globusonline.org/rdf/actions#"
+     xmlns:groups="http://www.globusonline.org/rdf/groups#">
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#ab58e953-fdd8-4860-b341-c9aca862d4fa">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#34951220-ad51-407d-8502-f83168834ece">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#48f9d8fd-4840-4ec2-b1e0-5fa4b36a3cae"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#65aad9ff-444b-4a68-9112-05cb3bd20a7a"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#6d0bf452-4e82-4a4c-ad6e-0b062d905601"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#871d5252-b7b1-4064-96af-58c7f125de26"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#7af34321-b7b1-4064-96af-58c7f125de26"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#7af34321-b7b1-4064-96af-58c7f125de26">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#approval"/>
+    <auto  rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</auto>
+    <auto_if_admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</auto_if_admin>
+    <admin  rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</admin>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#c48a5cb0-48c5-4df2-b4b1-712e57bce8e6">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#5bd8bb8d-4002-4407-9591-955932bb6d2f">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#3449aeef-c022-409e-8482-bda271424566">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#dcd89ef7-8c6a-4705-9914-cd61a0223590">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#7ba24cfe-c8c7-4cfd-805e-57e5698c6a91">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#68bfdd37-320c-416f-8944-c9eecd5386b5">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#a9d436c2-4757-4a8c-9147-ef4f3aaf4c10">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#a5955931-2833-48ea-87e1-af6e408f775c">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#aa3ac3b6-8743-47ae-9a4a-543506f921f1">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#3449aeef-c022-409e-8482-bda271424566"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#fc4c824a-15ac-4553-9bf0-da584c56f81d"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#cec8fd51-5da5-4f0d-ab28-bdb5e21768e4"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#f98882f1-cbc7-4878-adf1-0d4af11b183b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#c808771d-fb3b-4180-8310-ebf8ba80ff40">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#14d65fa6-5ec4-47ff-a37f-97b6243e3af8"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#1509215f-b2a3-4c57-87e7-5ba4fe752f05"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#bbfb46b1-74b8-4410-bd59-16dfdab40137"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#3740a04b-e1e6-4d40-a600-a7a91b4b8e91"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#91623d5e-0e09-4a26-972b-a6e68c5c617e">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#051de6df-b94a-4f38-a709-01b401883b1d">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#0f492698-01c3-4d51-8b30-b2df51dbf348">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#cec8fd51-5da5-4f0d-ab28-bdb5e21768e4">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#f98882f1-cbc7-4878-adf1-0d4af11b183b">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#27c0b7e4-260a-425b-8eb9-9637be7a4f3c">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#fd2a2089-5343-4ee5-98f0-f2538706e6e3"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#a5955931-2833-48ea-87e1-af6e408f775c"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#7ba24cfe-c8c7-4cfd-805e-57e5698c6a91"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#dcd89ef7-8c6a-4705-9914-cd61a0223590"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#c3e5769b-95c5-447b-a633-5b9a43f4f71f">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#6d0bf452-4e82-4a4c-ad6e-0b062d905601">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#05781419-4cf9-4d35-ad1a-1fcc49946af7">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#bbfb46b1-74b8-4410-bd59-16dfdab40137">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#da41fe35-f625-452b-8ce9-10d2f42adc82">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#91623d5e-0e09-4a26-972b-a6e68c5c617e"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#0f492698-01c3-4d51-8b30-b2df51dbf348"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#ab58e953-fdd8-4860-b341-c9aca862d4fa"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#aea82276-0afd-4951-8bfc-1df835b373bf"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#65aad9ff-444b-4a68-9112-05cb3bd20a7a">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#fd2a2089-5343-4ee5-98f0-f2538706e6e3">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#48f9d8fd-4840-4ec2-b1e0-5fa4b36a3cae">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#41f4f56f-4dcd-4978-94d5-bae9cb0081cf">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#38dec4f7-735e-4d5e-bf0e-1d6497f738b8"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#051de6df-b94a-4f38-a709-01b401883b1d"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#68bfdd37-320c-416f-8944-c9eecd5386b5"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#8d23af75-c68c-434a-b4bd-9833c592934b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#fc4c824a-15ac-4553-9bf0-da584c56f81d">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#6ed2358e-8c4b-48de-9260-c5e14dc49169">
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#join"/>
+    <anybody rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</anybody>
+    <community rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</community>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#aea82276-0afd-4951-8bfc-1df835b373bf">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#3740a04b-e1e6-4d40-a600-a7a91b4b8e91">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#14d65fa6-5ec4-47ff-a37f-97b6243e3af8">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#8d23af75-c68c-434a-b4bd-9833c592934b">
+    <admin rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_member_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+    <members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</members>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#38dec4f7-735e-4d5e-bf0e-1d6497f738b8">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#1509215f-b2a3-4c57-87e7-5ba4fe752f05">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#871d5252-b7b1-4064-96af-58c7f125de26">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#703c2b12-615c-40fb-9814-2927656cdc83">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#5bd8bb8d-4002-4407-9591-955932bb6d2f"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#4f928da4-78a5-4995-874b-388f159fcbca"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#c3e5769b-95c5-447b-a633-5b9a43f4f71f"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#a47b578f-7f6e-45c2-bd92-6c3ea27b4efb"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/groups#e32a248b-f377-48be-994a-6d587e7911d8">
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#05781419-4cf9-4d35-ad1a-1fcc49946af7"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#c48a5cb0-48c5-4df2-b4b1-712e57bce8e6"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#a9d436c2-4757-4a8c-9147-ef4f3aaf4c10"/>
+    <policy_options rdf:resource="http://www.globusonline.org/rdf/policy_option#6ed2358e-8c4b-48de-9260-c5e14dc49169"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#4f928da4-78a5-4995-874b-388f159fcbca">
+    <site rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</site>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#group_visibility"/>
+    <public rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</public>
+    <private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</private>
+    <parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</parent>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.globusonline.org/rdf/policy_option#a47b578f-7f6e-45c2-bd92-6c3ea27b4efb">
+    <admin_only rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</admin_only>
+    <rdf:type rdf:resource="http://www.globusonline.org/rdf/policy_option_type#invites"/>
+    <group_members rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members>
+    <group_members_and_parent rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</group_members_and_parent>
+    <any_community_member rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</any_community_member>
+  </rdf:Description>
+</rdf:RDF>

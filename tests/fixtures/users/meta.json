@@ -1,0 +1,5 @@
+{
+	"encrypted": true,
+	"hashed_keys": ["password"],
+	"encrypted_keys": ["full_name", "user_name", "email", "secret"]
+}

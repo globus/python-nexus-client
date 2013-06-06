@@ -1,0 +1,12 @@
+{
+    "user_name": "jbryan", 
+    "full_name": "JϠshua Bryan", 
+	"password" : "blah12",
+    "opt_in": false,
+    "email": "jbryan@no-reply.com",
+    "email_validated" : true,
+	"admin"        : true,
+	"custom_institution" : "My Own",
+	"custom_current_project_name" : "None of your business",
+    "secret" : "secret"
+}

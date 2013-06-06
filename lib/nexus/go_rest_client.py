@@ -484,8 +484,8 @@ class GlobusOnlineRestClient():
         if response.has_key('set-cookie'):
             self.session_cookies = response['set-cookie']
         if 'content-type' in response and 'application/json' in response['content-type'] and content != '':
-            return response, json.loads(content)
-        else:
+	    return response, json.loads(content)
+	else:
             return response, {}
     
     def _get_auth_headers(self, method, url):
