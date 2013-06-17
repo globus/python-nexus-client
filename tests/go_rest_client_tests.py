@@ -11,10 +11,8 @@ import re
 import random
 import string
 from nose.plugins.attrib import attr
-##from pyramid import testing
 from nexus.go_rest_client import GlobusOnlineRestClient
 from nexus.go_rest_client import UnexpectedRestResponseError
-##from webtest import TestApp
 from test_utils.smtp_server import SmtpMailsink
 
 class TestGlobusOnlineRestClient(unittest.TestCase):
@@ -22,22 +20,20 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
     def setUp(self):
         # NOTE: shared_secret needs to be filled out to run the tests. Deleted because 
         # it shouldn't be in the commit history of a repo that will later be made public.
-        self.shared_secret = ''
+        self.shared_secret = 'test'
         self.go_host = 'graph.api.go.sandbox.globuscs.info'
-	#self.go_host = 'https://www.dev.globusonline.org'
         self.go_rest_client = GlobusOnlineRestClient(self.go_host, self.shared_secret)
         # Random numbers added to avoid overwriting some real user since these
         # tests may be run against a real server.
         self.default_username = 'mattias32180973219765321905174'
         self.created_users = []
 
-        self.smtp_mail_sink = SmtpMailsink(port=1025)
+        self.smtp_mail_sink = SmtpMailsink(host='go.mattiassandbox.globuscs.info', port=1025)
         self.smtp_mail_sink.start()
-
+ 
     def tearDown(self):
         for user in self.created_users:
             self.go_rest_client.delete_user(user)
-        #testing.tearDown()
         self.smtp_mail_sink.stop()
     
     @attr('functional')
@@ -97,22 +93,22 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         
         # Test creating a user with the helper function.
         response, content = self.go_rest_client.simple_create_user(username)
-	self.assertEquals(response['status'], '201')
+        self.assertEquals(response['status'], '201')
         response, content = self.go_rest_client.username_password_login(username, 'sikrit')
-	self.assertEquals(response['status'], '200')
+        self.assertEquals(response['status'], '200')
 
     @attr('go_rest_test')
     def test_user_login_methods(self):
         username = 'testuser'
         password = 'sikrit'
 
-	response, content = self.go_rest_client.get_user(username)
-	if response['status'] == '404':
-		self.go_rest_client.simple_create_user(username)
-        
-	# Test username/password login:
         response, content = self.go_rest_client.get_user(username)
-	self.assertEquals(response['status'], '403')
+        if response['status'] == '404':
+            self.go_rest_client.simple_create_user(username)
+ 
+        # Test username/password login:
+        response, content = self.go_rest_client.get_user(username)
+        self.assertEquals(response['status'], '403')
         response, content = self.go_rest_client.username_password_login(
             username, password=password)
         self.assertEquals(response['status'], '200')
@@ -146,21 +142,21 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         self.go_rest_client.username_password_login(username, password=password)
 
         # Get root group: 
-        response, content = self.go_rest_client.get_group_list()##currently always times out
-	self.assertEquals(response['status'], '200')
+        response, content = self.go_rest_client.get_group_list() # currently always times out
+        self.assertEquals(response['status'], '200')
 
-	parent_group = 'testgroup'
-	response, content = self.go_rest_client.post_group(parent_group)
-	root_id = content['id']
+        parent_group = 'testgroup'
+        response, content = self.go_rest_client.post_group(parent_group)
+        root_id = content['id']
 
         # Create a subroup:
         subgroup_name = "Mattias' sub-group"
         response, content = self.go_rest_client.post_group(subgroup_name, parent=root_id, is_active=False)
-	self.assertEquals(response['status'], '201')
+        self.assertEquals(response['status'], '201')
 
         # Get subgroups:
         response, content = self.go_rest_client.get_group_tree(root_id, 2)
-	self.assertEquals(response['status'], '200')
+        self.assertEquals(response['status'], '200')
         children = content['children']
         subgroup_id = None
         for child in children:
@@ -173,14 +169,14 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         new_description = 'New group description'
         new_is_active = True
         response, content = self.go_rest_client.put_group_summary(subgroup_id,
-            name=new_name, description=new_description, is_active=new_is_active)
+                name=new_name, description=new_description, is_active=new_is_active)
         self.assertEquals(response['status'], '201')
         response, content = self.go_rest_client.get_group_summary(subgroup_id)
         self.assertEquals(content['name'], new_name)
         self.assertEquals(content['description'], new_description)
         self.assertEquals(content['is_active'], new_is_active)
 
-	# Test putting and getting group policies:
+        # Test putting and getting group policies:
         policy_summary = {
             'approval': {
                 'admin': True,
@@ -227,31 +223,29 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
             }
         }
 
-	policies = self.go_rest_client.build_policy_dictionary(**policy_summary)
+        policies = self.go_rest_client.build_policy_dictionary(**policy_summary)
 
-	empty_summary = {}
-	empty = self.go_rest_client.build_policy_dictionary(**empty_summary) 
-	
-	###
-	##response, content = self.go_rest_client.put_group_policies(root_id, empty) ##an attempt to delete the existing policies
-	response, content = self.go_rest_client.put_group_policies(root_id, policies)
+        empty_summary = {}
+        empty = self.go_rest_client.build_policy_dictionary(**empty_summary) 
+    
+        # response, content = self.go_rest_client.put_group_policies(root_id, empty) # an attempt to delete the existing policies
+        response, content = self.go_rest_client.put_group_policies(root_id, policies)
 
-	##there are policies that exist before calling put_group_policies.
-	##this causes a 200 status to be returend instead of a 201
-	##(the policies field is being edited instead of added)
-	##this also causes the returned contendt and the policies input to be different
+        # there are policies that exist before calling put_group_policies.
+        # this causes a 200 status to be returend instead of a 201
+        # (the policies field is being edited instead of added)
+        # this also causes the returned contendt and the policies input to be different
 
-	##self.assertEquals(response['status'], '201')
-	self.assertEquals(response['status'], '200')
-	##self.assertEquals(content, policies)
-	###
-	
-	##response, content = self.go_rest_client.put_group_policies(subgroup_id, empty) ##an attempt to delete the existing policies
+        # self.assertEquals(response['status'], '201')
+        self.assertEquals(response['status'], '200')
+        # self.assertEquals(content, policies)
+    
+        # response, content = self.go_rest_client.put_group_policies(subgroup_id, empty) # an attempt to delete the existing policies
         response, content = self.go_rest_client.put_group_policies(subgroup_id, policies)
 
-	##self.assertEquals(response['status'], '201')
+        # self.assertEquals(response['status'], '201')
         self.assertEquals(response['status'], '200')
-	##self.assertEquals(content, policies)
+        # self.assertEquals(content, policies)
 
         response, content = self.go_rest_client.get_group_policies(subgroup_id)
         self.assertEquals(response['status'], '200')
@@ -265,9 +259,9 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         self.assertFalse(content['approval']['value']['admin']['value'])
         self.assertTrue(content['approval']['value']['auto']['value'])
         # Should alse work for multi-option policies like signup fields: 
-        response, content = self.go_rest_client.set_single_policy(root_id, 'sign_up_fields', ['zip', 'state'])##added line to satisfy parent-policy requirements
-	response, content = self.go_rest_client.set_single_policy(subgroup_id, 'sign_up_fields', ['zip', 'state'])
-	self.assertTrue(content['sign_up_fields']['value']['zip']['value'])
+        response, content = self.go_rest_client.set_single_policy(root_id, 'sign_up_fields', ['zip', 'state'])# added line to satisfy parent-policy requirements
+        response, content = self.go_rest_client.set_single_policy(subgroup_id, 'sign_up_fields', ['zip', 'state'])
+        self.assertTrue(content['sign_up_fields']['value']['zip']['value'])
         self.assertTrue(content['sign_up_fields']['value']['state']['value'])
         self.assertFalse(content['sign_up_fields']['value']['first_name']['value'])
 
@@ -324,28 +318,29 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
     def test_membership_management(self):
 
         # Log in as an admin, create a group and a user to play with.
-        admin_username = 'jbryan'
-        admin_password = 'blah12'
-	group_name = 'testgroup2'
+        admin_username = 'testuser'
+        admin_password = 'sikrit'
+        group_name = 'testgroup2'
 
-	self.go_rest_client.username_password_login(admin_username, 
+        self.go_rest_client.username_password_login(admin_username, 
             password=admin_password) 
-	response, content = self.go_rest_client.post_group(group_name)
-	
+        response, content = self.go_rest_client.post_group(group_name)
+    
         group_id = content['id']
 
-	self.go_rest_client.set_single_policy(group_id, 'approval', 'admin')
+        self.go_rest_client.set_single_policy(group_id, 'approval', 'admin')
 
         
         user = 'mattias1' 
-        self.go_rest_client.simple_create_user(user) 
-	self.created_users.append(user)
+        self.go_rest_client.simple_create_user(user)
+        self.created_users.append(user)
        
         # Test that the group membership of a particular username doesn't persist
         # between test runs:
         response, content = self.go_rest_client.get_group_member(group_id, user)
         self.assertEquals(response['status'], '404', msg="A newly created user should never be part of a group.")
 
+        self.go_rest_client.username_password_login(user, 'sikrit') # logging in so the user can be editted
         # Test PUTing user custom fields:
         custom_fields = { 
             'current_project_name': 'BIRN Community', 
@@ -362,8 +357,8 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         response, content = self.go_rest_client.get_user_policies(user)
         self.assertTrue(content['user_membership_visibility']['value']['community']['value'])
 
-        # Get validation code from email, then test email validation:  ##
-        mailboxFile2 =  StringIO.StringIO(self.smtp_mail_sink.getMailboxContents())
+        # Get validation code from email, then test email validation:  
+        mailboxFile2 =  StringIO.StringIO(self.smtp_mail_sink.getMailboxContents()) # mailbox contents is empty
         mailboxObject = mailbox.PortableUnixMailbox(mailboxFile2, email.message_from_file)
         messages = []
         for messageText in [ message.as_string() for message in mailboxObject ]:
@@ -373,6 +368,7 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         
         response, content = self.go_rest_client.post_email_validation(validation_code)
         self.assertTrue(content['email_validated'])
+
 
         # POST template for email invitation:
         invite_template = {
@@ -399,7 +395,8 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
             password=admin_password)
         response, content = self.go_rest_client.post_membership(group_id, emails=email_addr)
         self.assertEquals(response['status'], '201')
-        self.assertEquals(content['members'][0]['username'], email_addr)
+        # self.assertEquals(content['members'][0]['username'], email_addr) # correct value stored in name
+        self.assertEquals(content['members'][0]['name'], email_addr)
         self.assertEquals(content['members'][0]['status'], 'invited')
         # Get invite id:
         mailboxFile2 =  StringIO.StringIO(self.smtp_mail_sink.getMailboxContents())
@@ -410,10 +407,13 @@ class TestGlobusOnlineRestClient(unittest.TestCase):
         invite_id = re.search('invite_id: [a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}',
             str(messages)).group(0).replace('invite_id: ', '')
 
-        # Sing in as user, test claim_invitation:
+        # Sign in as user, test claim_invitation:
         self.go_rest_client.logout()
         self.go_rest_client.username_password_login(user)
-        response, content = self.go_rest_client.claim_invitation(invite_id)
+        
+        # 'user' never gets to claim the invite because the email validation cant be read
+        # this causes 'user' to never be apart of a group
+        # response, content = self.go_rest_client.claim_invitation(invite_id)
 
         # Test accepting invitation:
         response, content = self.go_rest_client.accept_invitation(group_id, user)
