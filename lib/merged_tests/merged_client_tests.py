@@ -31,25 +31,22 @@ class TestMergedClient(unittest.TestCase):
         # NOTE: shared_secret needs to be filled out to run the tests. Deleted because 
         # it shouldn't be in the commit history of a repo that will later be made public.
         
-        
         self.shared_secret = 'test'
-        self.go_host = 'graph.api.go.sandbox.globuscs.info'
         
         # added to comply with MergedClient __init__ params
         self.config = {
-                "authorize_url": "localhost:8080/goauth/authorize",
                 "cache": {
                     "class": "nexus.token_utils.InMemoryCache",
                     "args": []
                     },
-                "server": "graph.api.globusonline.org",
+                "server": "graph.api.go.sandbox.globuscs.info",
                 "client": "I am not a client",
                 "client_secret": "I am not a secret", 
                 }
         # for client tests
         self.replacer = Replacer()
 
-        self.merged_client = MergedClient(self.go_host, self.shared_secret, config=self.config)
+        self.merged_client = MergedClient(config=self.config)
         # Random numbers added to avoid overwriting some real user since these
         # tests may be run against a real server.
         self.default_username = 'mattias32180973219765321905174'
@@ -63,13 +60,15 @@ class TestMergedClient(unittest.TestCase):
             self.merged_client.delete_user(user)
         self.smtp_mail_sink.stop()
         # for client tests
-	self.replacer.restore()
-    
+        self.replacer.restore()
+
     @attr('functional')
     def test_issue_request(self):
-        rest_client = MergedClient('www.google.com', self.shared_secret, config=self.config)
+        self.config['server'] = 'www.google.com'
+        rest_client = MergedClient(config=self.config)
         response, content = rest_client._issue_rest_request('')
-    
+        self.config['server'] = "graph.api.go.sandbox.globuscs.info"
+   
     @attr('go_rest_test')
     def test_user_management(self):
         username = self.default_username
@@ -254,22 +253,17 @@ class TestMergedClient(unittest.TestCase):
 
         policies = self.merged_client.build_policy_dictionary(**policy_summary)
 
-        empty_summary = {}
-        empty = self.merged_client.build_policy_dictionary(**empty_summary) 
-    
-        # response, content = self.merged_client.put_group_policies(root_id, empty) # an attempt to delete the existing policies
         response, content = self.merged_client.put_group_policies(root_id, policies)
 
         # there are policies that exist before calling put_group_policies.
         # this causes a 200 status to be returend instead of a 201
         # (the policies field is being edited instead of added)
-        # this also causes the returned contendt and the policies input to be different
+        # this also causes the returned content and the policies input to be different
 
         # self.assertEquals(response['status'], '201')
         self.assertEquals(response['status'], '200')
         # self.assertEquals(content, policies)
     
-        # response, content = self.merged_client.put_group_policies(subgroup_id, empty) # an attempt to delete the existing policies
         response, content = self.merged_client.put_group_policies(subgroup_id, policies)
 
         # self.assertEquals(response['status'], '201')
@@ -426,7 +420,7 @@ class TestMergedClient(unittest.TestCase):
         self.assertEquals(response['status'], '201')
         self.assertEquals(content['members'][0]['name'], email_addr)
         self.assertEquals(content['members'][0]['status'], 'invited')
-	
+    
         """
         # Get invite id:
         mailboxFile2 =  StringIO.StringIO(self.smtp_mail_sink.getMailboxContents())
@@ -483,26 +477,26 @@ class TestMergedClient(unittest.TestCase):
             return namedtuple('Request',
                     ['content', 'status_code'])(json.dumps({'pubkey':pubkey.save_pkcs1()}), 200)
         self.replacer.replace('requests.get', get_cert)
-        token = 'un=test|merged_clientid=test|SigningSubject=https://graph.api.globusonline.org/goauth/keys/test1|expiry={0}'
+        token = 'un=test|client_id=test|SigningSubject=https://graph.api.globusonline.org/goauth/keys/test1|expiry={0}'
         expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
         token = token.format(time.mktime(expires.timetuple()))
         sig = rsa.sign(token, privkey, 'SHA-1')
         hex_sig = binascii.hexlify(sig)
         token = '{0}|sig={1}'.format(token, hex_sig)
-        self.merged_client.validate_token(token)
+        self.merged_client.goauth_validate_token(token)
         sig = sig + 'f'
         hex_sig = binascii.hexlify(sig)
         token = '{0}|sig={1}'.format(token, hex_sig)
         try:
-            self.merged_client.validate_token(token)
+            self.merged_client.goauth_validate_token(token)
             self.fail()
         except ValueError:
             pass
 
     @attr('unit')
     def test_generate_request_url(self):
-        expected = "https://graph.api.globusonline.org/goauth/authorize?response_type=code&client_id=I+am+not+a+client"
-        self.assertEqual(expected, self.merged_client.generate_request_url())
+        expected = "https://" + self.merged_client.server + "/goauth/authorize?response_type=code&client_id=I+am+not+a+client"
+        self.assertEqual(expected, self.merged_client.goauth_generate_request_url())
 
     @attr('unit')
     def test_get_access_token(self):
@@ -522,7 +516,7 @@ class TestMergedClient(unittest.TestCase):
 
         self.replacer.replace('nexus.merged_client.token_utils.request_access_token',
             dummy_get_access_token)
-        access_token, refresh_token, expiry = self.merged_client.get_access_token_from_code('my token')
+        access_token, refresh_token, expiry = self.merged_client.goauth_get_access_token_from_code('my token')
         self.assertEqual(1234567, access_token)
         self.assertEqual(7654321, refresh_token)
         self.assertEqual(expected_expiry, expiry)

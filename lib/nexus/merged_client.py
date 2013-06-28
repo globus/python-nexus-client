@@ -25,12 +25,11 @@ from oauth2 import Request as OAuthRequest
 from oauth2 import SignatureMethod_HMAC_SHA1, Consumer, generate_nonce
 
 # NexusClient dependencies
-# loggin, json and time (from above) are also NexusClient dependencies
+# urllib, loggin, json and time (from above) are also NexusClient dependencies
 import base64
 from datetime import datetime
 import hashlib
 from subprocess import Popen, PIPE
-import urllib
 import urlparse
 
 import yaml
@@ -53,29 +52,7 @@ class MergedClient(object):
     # NOTE: GraphRestClient would be more accurate, but if we want to release 
     # this publically GlobusOnlineRestClient is probably a more pedagogical name.
 
-    def __init__(self, go_host, username=None, password=None,
-                 oauth_secret=None, goauth_token=None,
-                 config=None, config_file=None):# NexusClient params
-
-        # Initial login supported either using username+password or
-        # username+oauth_secret. The client also supports unauthenticated calls.
-        if not go_host.startswith('http'):
-            # Default to https
-            go_host = 'https://' + go_host
-        self.go_host = go_host
-        self.oauth_secret = oauth_secret
-        self.goauth_token = goauth_token
-        self.session_cookies = {}
-        self.default_password = 'sikrit' # Don't tell anyone.
-        self.current_user = None
-        if username:
-            if oauth_secret:
-                self.username_oauth_secret_login(username, oauth_secret)
-            elif goauth_token:
-                self.username_goauth_token_login(username, goauth_token)
-            else:
-                self.username_password_login(username, password=password)
-
+    def __init__(self, config=None, config_file=None):# NexusClient params
         # NexusClient __init__
         if config_file is not None:
             with open(config_file, 'r') as cfg:
@@ -101,6 +78,24 @@ class MergedClient(object):
         cache_impl_class = getattr(mod, cache_class.split('.')[-1])
         self.cache = cache_impl_class(*cache_config.get('args', []))
         self.cache = token_utils.LoggingCacheWrapper(self.cache)
+
+        # Initial login supported either using username+password or
+        # username+oauth_secret. The client also supports unauthenticated calls.
+        self.session_cookies = {}
+        self.default_password = 'sikrit' # Don't tell anyone.
+        self.current_user = None
+        username = self.config.get('username', None)
+        self.oauth_secret = self.config.get('oauth_secret', None)
+        self.goauth_token = self.config.get('goauth_token', None)
+        password = self.config.get('password', None)
+        if username:
+            if self.oauth_secret:
+                self.username_oauth_secret_login(username, self.oauth_secret)
+            elif self.goauth_token:
+                self.username_goauth_token_login(username, self.goauth_token)
+            else:
+                self.username_password_login(username, password=password)
+
 
     # GROUP OPERATIONS
     def get_group_list(self, my_roles=None, my_statuses=None):
@@ -137,7 +132,7 @@ class MergedClient(object):
 
     def get_group_policies(self, gid):
         url = '/groups/' + gid + '/policies'
-	return self._issue_rest_request(url)
+        return self._issue_rest_request(url)
 
     def get_group_email_templates(self, gid):
         # Returned document does not include the message of each template. 
@@ -192,7 +187,7 @@ class MergedClient(object):
             new_policy_options = [new_policy_options]
 
         response, policies = self.get_group_policies(gid)
-	existing_policy_options = policies[policy]['value']
+        existing_policy_options = policies[policy]['value']
 
         for policy_option in existing_policy_options.keys():
             if policy_option in new_policy_options:
@@ -375,8 +370,8 @@ class MergedClient(object):
 
     def put_user_custom_fields(self, username, **kwargs):
         response, content = self.get_user(username)
-	content['custom_fields'] = kwargs
-	content.pop('username')
+        content['custom_fields'] = kwargs
+        content.pop('username')
         return self.put_user(username, **content)
 
     def get_user_policies(self, username):
@@ -511,7 +506,7 @@ class MergedClient(object):
         
         http = httplib2.Http(disable_ssl_certificate_validation=True, timeout=10)
         
-        url = self.go_host + path
+        url = 'https://' + self.server + path
         headers = {}
         headers['Content-Type'] = content_type
         headers['Accept'] = accept 
@@ -538,8 +533,8 @@ class MergedClient(object):
         if response.has_key('set-cookie'):
             self.session_cookies = response['set-cookie']
         if 'content-type' in response and 'application/json' in response['content-type'] and content != '':
-	    return response, json.loads(content)
-	else:
+            return response, json.loads(content)
+        else:
             return response, {}
     
     def _get_auth_headers(self, method, url):
@@ -588,7 +583,7 @@ class MergedClient(object):
             member['status_reason'])
 
     #Nexus Client functions
-    def validate_token(self, token):
+    def goauth_validate_token(self, token):
         """
         Validate that a token was issued for the specified user and client by
         the server in the SigningSubject.
@@ -603,7 +598,7 @@ class MergedClient(object):
         return token_utils.validate_token(token, self.cache, self.verify_ssl)
 
 
-    def generate_request_url(self, username=None):
+    def goauth_generate_request_url(self, username=None):
         """
         In order for the user to authorize the client to access his data, he
         must first go to the custom url provided here.
@@ -622,7 +617,7 @@ class MergedClient(object):
                 urllib.urlencode(query_params), None)
         return urlparse.urlunsplit(parts)
 
-    def get_access_token_from_code(self, code):
+    def goauth_get_access_token_from_code(self, code):
         """
         After receiving a code from the end user, this method will acquire an
         access token from the server which can be used for subsequent requests.
@@ -640,7 +635,7 @@ class MergedClient(object):
                 time.mktime(datetime.utcnow().timetuple()) + result.expires_in
                 )
 
-    def rsa_get_request_token(self, username, client_id, password=None):
+    def goauth_rsa_get_request_token(self, username, client_id, password=None):
         query_params = {
                 "response_type": "code",
                 "client_id": client_id
@@ -659,7 +654,7 @@ class MergedClient(object):
         response = requests.get(url, headers=headers, verify=self.verify_ssl)
         return response.json
 
-    def request_client_credential(self, client_id, password=None):
+    def goauth_request_client_credential(self, client_id, password=None):
         """
         This is designed to support section 4.4 of the OAuth 2.0 spec:
 
@@ -682,7 +677,7 @@ class MergedClient(object):
         response = requests.post(url, data={'grant_type': 'client_credentials'}, headers=headers, verify=self.verify_ssl)
         return response.json
 
-    def get_user_using_access_token(self, access_token):
+    def goauth_get_user_using_access_token(self, access_token):
         access_token_dict = dict(field.split('=') for field in access_token.split('|'))
         user_path = '/users/' + access_token_dict['un']
         url_parts = ('https', self.server, user_path, None, None)

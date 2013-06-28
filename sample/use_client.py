@@ -1,6 +1,6 @@
 import os.path
 from getpass import getpass
-from nexus import Client
+from nexus.merged_client import MergedClient
 
 # This sample makes the following assumptions about the items listed in the
 # sample.yml config file:
@@ -13,9 +13,10 @@ from nexus import Client
 
 # First instantiate a client object either with a dictionary or with a yaml file
 pwd = os.path.dirname(__file__)
-client = Client(config_file=os.path.join(pwd, 'sample.yml'))
+user_client = MergedClient(config_file=os.path.join(pwd, 'user_client_config.yml'))
+alias_client = MergedClient(config_file=os.path.join(pwd, 'alias_client_config.yml'))
 # Generate a url for the end user to use to authorize this client/authenticate.
-url = client.generate_request_url()
+url = alias_client.goauth_generate_request_url()
 print "Please authenticate using the following url"
 print url
 token = raw_input("Please copy the resulting code here: ")
@@ -25,26 +26,26 @@ token = raw_input("Please copy the resulting code here: ")
 
 # Validate the token:
 try:
-    user, clientid, nexus_host = client.validate_token(token)
-    print "Yup, you are {0}".format(user)
+    alias, client_id, nexus_host = alias_client.goauth_validate_token(token)
+    print "Yup, you are {0}".format(alias)
 except:
     print "That is not a valid authorization code"
 
-print("As " + user + ", get an access key for yourself using rsa:")
-print client.request_client_credential(user, lambda: getpass("Private Key Password"))
+print("As " + alias + ", get an access key for yourself using rsa:")
+print alias_client.goauth_request_client_credential(alias, lambda: getpass("Private Key Password"))
 
-print("As " + user + ", get a request token for client " + client.client + " using rsa authentication:")
-response = client.rsa_get_request_token(user, client.client, lambda: getpass("Private Key Password"))
+print("As " + alias + ", get a request token for client " + user_client.client + " using rsa authentication:")
+response = alias_client.goauth_rsa_get_request_token(alias, user_client.client, lambda: getpass("Private Key Password"))
 print response
 
-print("As " + client.client + ", get an access key from code:")
-access_token, refresh_token, expires_in = client.get_access_token_from_code(response['code'])
+print("As " + user_client.client + ", get an access key from code:")
+access_token, refresh_token, expires_in = user_client.goauth_get_access_token_from_code(response['code'])
 print access_token
 
 print("Validate access token:")
-user, clientid, nexus_host = client.validate_token(access_token)
-print(nexus_host + " claims this is a valid token issued by " + user + " for " + clientid)
+alias, client_id, nexus_host = user_client.goauth_validate_token(access_token)
+print(nexus_host + " claims this is a valid token issued by " + alias + " for " + client_id)
 
-print("Use access token to act as " + user + ":")
-response = client.get_user_using_access_token(access_token)
+print("Use access token to act as " + alias + ":")
+response = user_client.goauth_get_user_using_access_token(access_token)
 print response
