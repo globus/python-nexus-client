@@ -1,2 +1,5 @@
 httplib2==0.7.1
 oauth2==1.5.167
+requests==0.13.3
+PyYAML==3.10
+rsa==3.0.1
