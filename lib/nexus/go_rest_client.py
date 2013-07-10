@@ -48,7 +48,7 @@ log = logging.getLogger()
 
 # using the 'new-style class' format to ensure
 # compatibility with possible NexusClient inherencies
-class MergedClient(object): 
+class GlobusOnlineRestClient(object): 
     # NOTE: GraphRestClient would be more accurate, but if we want to release 
     # this publically GlobusOnlineRestClient is probably a more pedagogical name.
 
@@ -83,16 +83,17 @@ class MergedClient(object):
         # username+oauth_secret. The client also supports unauthenticated calls.
         self.session_cookies = {}
         self.default_password = 'sikrit' # Don't tell anyone.
-        self.current_user = None
-        username = self.config.get('username', None)
-        self.oauth_secret = self.config.get('oauth_secret', None)
-        self.goauth_token = self.config.get('goauth_token', None)
+        self.current_user = self.oauth_secret = self.goauth_token = None
+        # username = self.config.get('username', None)
+        username = self.client
+        oauth_secret = self.config.get('oauth_secret', None)
+        goauth_token = self.config.get('goauth_token', None)
         password = self.config.get('password', None)
         if username:
-            if self.oauth_secret:
-                self.username_oauth_secret_login(username, self.oauth_secret)
-            elif self.goauth_token:
-                self.username_goauth_token_login(username, self.goauth_token)
+            if oauth_secret:
+                self.username_oauth_secret_login(username, oauth_secret)
+            elif goauth_token:
+                self.username_goauth_token_login(username, goauth_token)
             else:
                 self.username_password_login(username, password=password)
 
@@ -341,7 +342,6 @@ class MergedClient(object):
         if custom_fields:
             query_params['custom_fields'] = ','.join(custom_fields)
         url = '/users/' + username + '?' + urllib.urlencode(query_params)
-        url = '/users/' + username + '?' + urllib.urlencode(query_params)
         return self._issue_rest_request(url, use_session_cookies=use_session_cookies)
     
     def get_user_secret(self, username, use_session_cookies=False):
@@ -458,6 +458,7 @@ class MergedClient(object):
         self.current_user = None
         self.session_cookies = None
         self.oauth_secret = None
+        self.goauth_token = None
         return response, content
 
     def post_email_validation(self, validation_code):
@@ -502,12 +503,12 @@ class MergedClient(object):
         return urllib.urlencode(params)
 
     def _issue_rest_request(self, path, http_method='GET', content_type='application/json',
-        accept='application/json', params=None, use_session_cookies=False):
+        accept='application/json', params=None, use_session_cookies=False, headers=None):
         
         http = httplib2.Http(disable_ssl_certificate_validation=True, timeout=10)
         
         url = 'https://' + self.server + path
-        headers = {}
+        if headers is None: headers = {}
         headers['Content-Type'] = content_type
         headers['Accept'] = accept 
         # Use OAuth authentication, session cookies, or no authentication?
@@ -529,10 +530,11 @@ class MergedClient(object):
             else:
                 body = json.dumps(params)
         response, content = http.request(url, http_method, headers=headers, body=body)
-        
         if response.has_key('set-cookie'):
             self.session_cookies = response['set-cookie']
         if 'content-type' in response and 'application/json' in response['content-type'] and content != '':
+            return response, json.loads(content)
+        elif response['status'][0] != '4' and 'content-type' in response and 'text/html; charset=UTF-8' in response['content-type'] and content != '':
             return response, json.loads(content)
         else:
             return response, {}
@@ -649,10 +651,8 @@ class MergedClient(object):
                 username,
                 query=query_params,
                 password=password)
-        url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
-        url = urlparse.urlunsplit(url_parts)
-        response = requests.get(url, headers=headers, verify=self.verify_ssl)
-        return response.json
+        url = path + '?' + query_params
+        return self._issue_rest_request(url, headers=headers) 
 
     def goauth_request_client_credential(self, client_id, password=None):
         """
@@ -664,6 +664,8 @@ class MergedClient(object):
          control"
         """
         body = 'grant_type=client_credentials'
+        # params = {'grant_type': 'client_credentials'}
+        # body = urllib.urlencode(params)
         path = '/goauth/token'
         method = 'POST'
         headers = sign_with_rsa(self.user_key_file,
@@ -676,19 +678,20 @@ class MergedClient(object):
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type': 'client_credentials'}, headers=headers, verify=self.verify_ssl)
         return response.json
+        ## return self._issue_rest_request(path, http_method=method, params=params, headers=headers)
+        # return self._issue_rest_request(path, http_method=method, headers=headers)
+ 
 
     def goauth_get_user_using_access_token(self, access_token):
         access_token_dict = dict(field.split('=') for field in access_token.split('|'))
         user_path = '/users/' + access_token_dict['un']
-        url_parts = ('https', self.server, user_path, None, None)
-        url = urlparse.urlunsplit(url_parts)
         headers = { 
             "X-Globus-Goauthtoken": str(access_token),
             "Content-Type": "application/json"
         }
-        response = requests.get(url, headers=headers, verify=self.verify_ssl)
-        assert(response.status_code == requests.codes.ok)
-        return response.json
+        response, content = self._issue_rest_request(user_path, headers=headers)
+        assert( int(response['status']) == requests.codes.ok)
+        return response, content
 
 class StateTransitionError(Exception):
     def __init__(self, prev_state, next_state, message):

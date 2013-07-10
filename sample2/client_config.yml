@@ -3,4 +3,5 @@ cache:
   class: 'nexus.token_utils.InMemoryCache'
 client: testuser5
 client_secret: 
+user_private_key_file: dummy_key
 verify_ssl: false
