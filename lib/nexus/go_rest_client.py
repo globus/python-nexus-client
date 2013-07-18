@@ -24,8 +24,6 @@ import time
 from oauth2 import Request as OAuthRequest
 from oauth2 import SignatureMethod_HMAC_SHA1, Consumer, generate_nonce
 
-# NexusClient dependencies
-# urllib, loggin, json and time (from above) are also NexusClient dependencies
 import base64
 from datetime import datetime
 import hashlib
@@ -83,8 +81,7 @@ class GlobusOnlineRestClient(object):
         # username+oauth_secret. The client also supports unauthenticated calls.
         self.session_cookies = {}
         self.default_password = 'sikrit' # Don't tell anyone.
-        self.current_user = self.oauth_secret = self.goauth_token = None
-        # username = self.config.get('username', None)
+        self.oauth_secret = self.goauth_token = None
         username = self.client
         oauth_secret = self.config.get('oauth_secret', None)
         goauth_token = self.config.get('goauth_token', None)
@@ -262,7 +259,7 @@ class GlobusOnlineRestClient(object):
         # claim_invitation ties an email invite to a GO user, and must be done
         # before the invite can be accepted.
         url = '/memberships/' + invite_id
-        response, user = self.get_user(self.current_user)
+        response, user = self.get_user(self.client)
         response, membership = self._issue_rest_request(url)
         membership['username'] = user['username']
         membership['email'] = user['email']
@@ -328,7 +325,10 @@ class GlobusOnlineRestClient(object):
             'suspended',
             'Only suspended members can be unsuspended.',
             new_status_reason)
-                      
+
+    def delete_group(self, gid):
+	path = '/groups/' + gid
+	return self._issue_rest_request(path, 'DELETE')                   
 
     # USER OPERATIONS
 
@@ -423,7 +423,7 @@ class GlobusOnlineRestClient(object):
             raise UnexpectedRestResponseError(
                 "Could not retrieve user secret.")
         self.oauth_secret = secret_content['secret']
-        self.current_user = username
+        self.client = username
         self.session_cookies = None
         return response, content
 
@@ -433,29 +433,29 @@ class GlobusOnlineRestClient(object):
         # oauth_secret will be used for all subsequent calls until user is logged
         # out. The result of the get_user() call is returned.
         old_oauth_secret = self.oauth_secret
-        old_current_user = self.current_user
+        old_client = self.client
         self.oauth_secret = oauth_secret
-        self.current_user = username
+        self.client = username
         response, content = self.get_user(username)
         if response['status'] != '200':
             self.oauth_secret = old_oauth_secret
-            self.current_user = old_current_user
+            self.client = old_client
         return response, content
 
     def username_goauth_token_login(self, username, goauth_token):
         old_goauth_token = self.goauth_token
-        old_current_user = self.current_user
+        old_client = self.client
         self.goauth_token = goauth_token
-        self.current_user = username
+        self.client = username
         response, content = self.get_user(username)
         if response['status'] != '200':
             self.goauth_token = old_goauth_token
-            self.current_user = old_current_user
+            self.client = old_client
         return response, content
 
     def logout(self):
         response, content = self._issue_rest_request('/logout')
-        self.current_user = None
+        self.client = None
         self.session_cookies = None
         self.oauth_secret = None
         self.goauth_token = None
@@ -515,14 +515,13 @@ class GlobusOnlineRestClient(object):
         if use_session_cookies:
             if self.session_cookies:
                 headers['Cookie'] = self.session_cookies
-        elif self.current_user and self.oauth_secret:
+        elif self.client and self.oauth_secret:
             auth_headers = self._get_auth_headers(http_method, url)
             # Merge dicts. In case of a conflict items in headers take precedence.
             headers = dict(auth_headers.items() + headers.items())
-        elif self.current_user and self.goauth_token:
+        elif self.client and self.goauth_token:
             headers["Authorization"] = "Globus-Goauthtoken %s" \
                                        % self.goauth_token
-
         body = None
         if params:
             if content_type == 'application/x-www-form-urlencoded':
@@ -546,7 +545,7 @@ class GlobusOnlineRestClient(object):
             'oauth_timestamp': int(time.time())
         }
         oauth_request = OAuthRequest(method, url, parameters=oauth_params)
-        consumer = Consumer(self.current_user, self.oauth_secret)
+        consumer = Consumer(self.client, self.oauth_secret)
         oauth_request.sign_request(SignatureMethod_HMAC_SHA1(), consumer, None)
         auth_headers = oauth_request.to_header()
         auth_headers['Authorization'] = auth_headers['Authorization'].encode('utf-8')
@@ -664,10 +663,11 @@ class GlobusOnlineRestClient(object):
          control"
         """
         body = 'grant_type=client_credentials'
-        # params = {'grant_type': 'client_credentials'}
+        # params = {'grant_type': 'client_redentials'}
         # body = urllib.urlencode(params)
         path = '/goauth/token'
         method = 'POST'
+        # method = 'GET'
         headers = sign_with_rsa(self.user_key_file,
                 path,
                 method,
@@ -678,9 +678,8 @@ class GlobusOnlineRestClient(object):
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type': 'client_credentials'}, headers=headers, verify=self.verify_ssl)
         return response.json
-        ## return self._issue_rest_request(path, http_method=method, params=params, headers=headers)
+        # return self._issue_rest_request(path, http_method=method, params=params, headers=headers)
         # return self._issue_rest_request(path, http_method=method, headers=headers)
- 
 
     def goauth_get_user_using_access_token(self, access_token):
         access_token_dict = dict(field.split('=') for field in access_token.split('|'))
