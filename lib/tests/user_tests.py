@@ -128,3 +128,33 @@ class TestMergedClient(unittest.TestCase):
         response, content = self.go_rest_client.get_user(username)
         self.assertEquals(response['status'], '403')
 
+    @attr('go_rest_test')
+    def test_rsa_key_methods(self):
+        username = 'testuser'
+        password = 'sikrit'
+        key_alias = 'test_key'
+
+
+        self.go_rest_client.username_password_login(username, password)
+
+        with open('test_rsa_key.pub') as key_file:
+                rsa_key = key_file.readline()
+
+        # Test posting an rsa_key
+        response, content = self.go_rest_client.post_rsa_key(key_alias, rsa_key=rsa_key)
+        self.assertEquals(response['status'], '201')
+
+        # Test getting the rsa_key_list()
+        response, content = self.go_rest_client.get_rsa_key_list()
+        self.assertEquals(response['status'], '200')
+
+        key_id = None
+        for key in content:
+            if key['alias'] == key_alias and key['ssh_key'] == rsa_key:
+                key_id = key['credential_key']
+        self.assertIsNotNone(key_id, msg="Couldn't find the posted rsa_key in the key list")
+
+        # Test deleting an rsa_key
+        response, content = self.go_rest_client.delete_rsa_key(key_id)
+        self.assertEquals(response['status'], '200')
+

@@ -466,6 +466,27 @@ class GlobusOnlineRestClient(object):
         params = {'validation_code': validation_code}
         return self._issue_rest_request(url, http_method='POST', params=params)
 
+    def post_rsa_key(self, key_name, rsa_key=None, rsa_key_file=None):
+        if rsa_key_file is not None:
+             with open(rsa_key_file, 'r') as key_file:
+                 key = key_file.readline()
+        elif rsa_key is not None:
+             key = rsa_key
+        else:
+            raise AttributeError("No rsa key was specified")
+        
+        path = '/users/'+self.client+'/credentials/ssh2'
+        params = {'alias': key_name, 'ssh_key': key}
+        return self._issue_rest_request(path, http_method='POST', params=params)
+
+    def get_rsa_key_list(self):
+        path = '/users/'+self.client+'/credentials'
+        return self._issue_rest_request(path)
+
+    def delete_rsa_key(self, credential_id):
+        path = '/users/'+self.client+'/credentials/ssh2/'+credential_id
+        return self._issue_rest_request(path, http_method='DELETE') 
+
     # UTILITY FUNCTIONS
 
     def build_policy_dictionary(self, **kwargs):
