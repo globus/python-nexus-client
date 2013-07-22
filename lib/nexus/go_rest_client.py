@@ -684,11 +684,8 @@ class GlobusOnlineRestClient(object):
          control"
         """
         body = 'grant_type=client_credentials'
-        # params = {'grant_type': 'client_redentials'}
-        # body = urllib.urlencode(params)
         path = '/goauth/token'
         method = 'POST'
-        # method = 'GET'
         headers = sign_with_rsa(self.user_key_file,
                 path,
                 method,
@@ -699,19 +696,19 @@ class GlobusOnlineRestClient(object):
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type': 'client_credentials'}, headers=headers, verify=self.verify_ssl)
         return response.json
-        # return self._issue_rest_request(path, http_method=method, params=params, headers=headers)
-        # return self._issue_rest_request(path, http_method=method, headers=headers)
 
     def goauth_get_user_using_access_token(self, access_token):
         access_token_dict = dict(field.split('=') for field in access_token.split('|'))
         user_path = '/users/' + access_token_dict['un']
+        url_parts = ('https', self.server, user_path, None, None) 
+        url = urlparse.urlunsplit(url_parts) 
         headers = { 
             "X-Globus-Goauthtoken": str(access_token),
             "Content-Type": "application/json"
         }
-        response, content = self._issue_rest_request(user_path, headers=headers)
-        assert( int(response['status']) == requests.codes.ok)
-        return response, content
+        response = requests.get(url, headers=headers, verify=self.verify_ssl)
+        assert(response.status_code == requests.codes.ok)
+        return response.json
 
 class StateTransitionError(Exception):
     def __init__(self, prev_state, next_state, message):

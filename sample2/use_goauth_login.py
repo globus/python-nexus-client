@@ -16,7 +16,7 @@ access_token = response['access_token']
 # try to login with the access token
 print 'Login with the access token: '
 client.username_goauth_token_login(user, access_token)
-if(user == client.current_user):
+if(user == client.client):
     print 'successful login as ' + user
 else:
     print 'login failed'
