@@ -11,6 +11,7 @@ client = GlobusOnlineRestClient(config_file=os.path.join(pwd, 'client_config.yml
 print 'Get an access token with a username and rsa key: '
 user = raw_input('username: ')
 response = client.goauth_request_client_credential(user, lambda: getpass("Private Key Password: "))
+print response
 access_token = response['access_token']
 
 # try to login with the access token

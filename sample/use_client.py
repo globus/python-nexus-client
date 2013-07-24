@@ -16,8 +16,8 @@ pwd = os.path.dirname(__file__)
 user_client = GlobusOnlineRestClient(config_file=os.path.join(pwd, 'user_client_config.yml'))
 alias_client = GlobusOnlineRestClient(config_file=os.path.join(pwd, 'alias_client_config.yml'))
 
-# Add the rsa key from the file specified in the config to the alias_client's list of rsa keys
-# (If the key is not already added)
+# Add the rsa key from the file specified in alias_client_config.yml 
+# to the alias_client's list of rsa keys
 filename = alias_client.user_key_file+".pub"
 print "Adding rsa key from " + filename
 response, content = alias_client.post_rsa_key('test', rsa_key_file=filename)
