@@ -42,29 +42,28 @@ from nexus.utils import (
 import requests
 import rsa
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
-# using the 'new-style class' format to ensure
-# compatibility with possible NexusClient inherencies
 class GlobusOnlineRestClient(object): 
     # NOTE: GraphRestClient would be more accurate, but if we want to release 
     # this publically GlobusOnlineRestClient is probably a more pedagogical name.
 
-    def __init__(self, config=None, config_file=None):# NexusClient params
-        # NexusClient __init__
+    def __init__(self, config=None, config_file=None):
         if config_file is not None:
             with open(config_file, 'r') as cfg:
                 self.config = yaml.load(cfg.read())
         elif config is not None:
             self.config = config
         else:
-            raise AttributeError("No configuration was specified")
+            raise ValueError("No configuration was specified")
         self.server = self.config['server']
         cache_config = self.config.get('cache', {
                     'class': 'nexus.token_utils.InMemoryCache',
                     'args': [],
                     })
-        self.client = self.config['client']
+        # client is the current user that the GlobusOnlineRestClient is using
+        # but not necessarily acting as. 
+        self.client = self.config['client'] 
         self.client_secret = self.config['client_secret']
         self.user_key_file = self.config.get('user_private_key_file', '~/.ssh/id_rsa')
         cache_class = cache_config['class']
@@ -473,7 +472,7 @@ class GlobusOnlineRestClient(object):
         elif rsa_key is not None:
              key = rsa_key
         else:
-            raise AttributeError("No rsa key was specified")
+            raise ValueError("No rsa key was specified")
         
         path = '/users/'+self.client+'/credentials/ssh2'
         params = {'alias': key_name, 'ssh_key': key}
@@ -524,12 +523,12 @@ class GlobusOnlineRestClient(object):
         return urllib.urlencode(params)
 
     def _issue_rest_request(self, path, http_method='GET', content_type='application/json',
-        accept='application/json', params=None, use_session_cookies=False, headers=None):
+        accept='application/json', params=None, use_session_cookies=False):
         
         http = httplib2.Http(disable_ssl_certificate_validation=True, timeout=10)
         
         url = 'https://' + self.server + path
-        if headers is None: headers = {}
+        headers = {}
         headers['Content-Type'] = content_type
         headers['Accept'] = accept 
         # Use OAuth authentication, session cookies, or no authentication?
@@ -553,8 +552,6 @@ class GlobusOnlineRestClient(object):
         if response.has_key('set-cookie'):
             self.session_cookies = response['set-cookie']
         if 'content-type' in response and 'application/json' in response['content-type'] and content != '':
-            return response, json.loads(content)
-        elif response['status'][0] != '4' and 'content-type' in response and 'text/html; charset=UTF-8' in response['content-type'] and content != '':
             return response, json.loads(content)
         else:
             return response, {}
@@ -671,8 +668,10 @@ class GlobusOnlineRestClient(object):
                 username,
                 query=query_params,
                 password=password)
-        url = path + '?' + query_params
-        return self._issue_rest_request(url, headers=headers) 
+        url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
+        url = urlparse.urlunsplit(url_parts)
+        response = requests.get(url, headers=headers, verify=self.verify_ssl) 
+        return response.json
 
     def goauth_request_client_credential(self, client_id, password=None):
         """

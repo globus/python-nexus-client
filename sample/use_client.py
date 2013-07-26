@@ -48,11 +48,11 @@ print("As " + alias + ", get an access key for yourself using rsa:")
 print alias_client.goauth_request_client_credential(alias, lambda: getpass("Private Key Password"))
 
 print("As " + alias + ", get a request token for client " + user_client.client + " using rsa authentication:")
-response, content = alias_client.goauth_rsa_get_request_token(alias, user_client.client, lambda: getpass("Private Key Password"))
-print content
+response = alias_client.goauth_rsa_get_request_token(alias, user_client.client, lambda: getpass("Private Key Password"))
+print response
 
 print("As " + user_client.client + ", get an access key from code:")
-access_token, refresh_token, expires_in = user_client.goauth_get_access_token_from_code(content['code'])
+access_token, refresh_token, expires_in = user_client.goauth_get_access_token_from_code(response['code'])
 print access_token
 
 print("Validate access token:")
@@ -62,3 +62,4 @@ print(nexus_host + " claims this is a valid token issued by " + alias + " for " 
 print("Use access token to act as " + alias + ":")
 response = user_client.goauth_get_user_using_access_token(access_token)
 print response
+
