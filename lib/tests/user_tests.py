@@ -4,7 +4,7 @@ import unittest
 from nose.plugins.attrib import attr
 from nexus.go_rest_client import GlobusOnlineRestClient
 from nexus.go_rest_client import UnexpectedRestResponseError
-
+from test_config_file import config
 
 class TestMergedClient(unittest.TestCase):
 
@@ -14,15 +14,7 @@ class TestMergedClient(unittest.TestCase):
         
         self.shared_secret = 'test'
         
-        self.config = {
-                "cache": {
-                    "class": "nexus.token_utils.InMemoryCache",
-                    "args": []
-                    },
-                "server": "graph.api.go.sandbox.globuscs.info",
-                "client": "I am not a client",
-                "client_secret": "I am not a secret", 
-                }
+        self.config = config
 
         self.go_rest_client = GlobusOnlineRestClient(config=self.config)
         # Random numbers added to avoid overwriting some real user since these
@@ -50,7 +42,7 @@ class TestMergedClient(unittest.TestCase):
 
         # Create user using POST. 
         response, content = self.go_rest_client.post_user(username, 
-            'Mattias Lidman', 'foo@bar.com', password)
+            'Mattias Lidman', 'testuseremail100@gmail.com', password)
         self.assertEquals(response['status'], '201', msg='Content: ' + str(content))
         self.assertEquals(content['username'], username)
         
@@ -87,7 +79,7 @@ class TestMergedClient(unittest.TestCase):
         self.assertEquals(response['status'], '403')
         
         # Test creating a user with the helper function.
-        response, content = self.go_rest_client.simple_create_user(username)
+        response, content = self.go_rest_client.post_user(username, 'Test User', 'testuseremail100@gmail.com', 'sikrit')
         self.assertEquals(response['status'], '201')
         response, content = self.go_rest_client.username_password_login(username, 'sikrit')
         self.assertEquals(response['status'], '200')
@@ -99,7 +91,7 @@ class TestMergedClient(unittest.TestCase):
 
         response, content = self.go_rest_client.get_user(username)
         if response['status'] == '404':
-            self.go_rest_client.simple_create_user(username)
+            self.go_rest_client.post_user(username, 'Test User', 'testuseremail100@gmail.com', 'sikrit') 
 
         # Test username/password login:
         response, content = self.go_rest_client.get_user(username)

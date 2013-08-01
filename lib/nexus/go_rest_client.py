@@ -63,8 +63,6 @@ class GlobusOnlineRestClient(object):
                     })
         # client is the current user that the GlobusOnlineRestClient is using
         # but not necessarily acting as. 
-        self.client = self.config['client'] 
-        self.client_secret = self.config['client_secret']
         self.user_key_file = self.config.get('user_private_key_file', '~/.ssh/id_rsa')
         cache_class = cache_config['class']
         self.verify_ssl = self.config.get('verify_ssl', True)
@@ -80,11 +78,12 @@ class GlobusOnlineRestClient(object):
         # username+oauth_secret. The client also supports unauthenticated calls.
         self.session_cookies = {}
         self.default_password = 'sikrit' # Don't tell anyone.
-        self.oauth_secret = self.goauth_token = None
-        username = self.client
+        self.client = self.oauth_secret = self.goauth_token = None
+        username = self.config['client']
         oauth_secret = self.config.get('oauth_secret', None)
         goauth_token = self.config.get('goauth_token', None)
-        password = self.config.get('password', None)
+        password = self.config['client_secret']
+        self.client_secret = password
         if username:
             if oauth_secret:
                 self.username_oauth_secret_login(username, oauth_secret)
@@ -364,7 +363,6 @@ class GlobusOnlineRestClient(object):
         kwargs['username'] = username
         path = '/users/' + username
 
-        response, content = self._issue_rest_request(path, 'PUT', params=kwargs)
         return self._issue_rest_request(path, 'PUT', params = kwargs)
 
     def put_user_custom_fields(self, username, **kwargs):
@@ -389,15 +387,6 @@ class GlobusOnlineRestClient(object):
         policies['user_membership_visibility']['value']
         response, content = self.put_user_policies(username, policies)
         return response, content
-
-    def simple_create_user(self, username, accept_terms=True, opt_in=True):
-        # Wrapper function that only needs a username to create a user. If you
-        # want full control, use post_user instead.
-        fullname = username.capitalize() + ' ' + (username + 'son').capitalize()
-        email = username + '@' + username + 'son.com'
-        password = self.default_password
-        return self.post_user(username, fullname, email, password, 
-            accept_terms=accept_terms, opt_in=opt_in)
 
     def delete_user(self, username):
         path = '/users/' + username 
@@ -452,12 +441,18 @@ class GlobusOnlineRestClient(object):
             self.client = old_client
         return response, content
 
+    # NOTE: It might make sense going forward to restrict each GlobusOnlineRestClient 
+    # object to a single user. goauth_get_access_token_from_code() doesn't handle
+    # logging out and logging in as a different user very well because it uses the
+    # client_secret (password). The client_secret is hard to track between logins
+    # because oauth and goauth login methods don't require a client_secret
     def logout(self):
         response, content = self._issue_rest_request('/logout')
         self.client = None
         self.session_cookies = None
         self.oauth_secret = None
         self.goauth_token = None
+        self.client_secret = None
         return response, content
 
     def post_email_validation(self, validation_code):
@@ -601,7 +596,6 @@ class GlobusOnlineRestClient(object):
             member['status'],
             member['status_reason'])
 
-    #Nexus Client functions
     def goauth_validate_token(self, token):
         """
         Validate that a token was issued for the specified user and client by

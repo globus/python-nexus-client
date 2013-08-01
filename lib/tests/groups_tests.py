@@ -13,7 +13,7 @@ import string
 from nose.plugins.attrib import attr
 from nexus.go_rest_client import GlobusOnlineRestClient
 from nexus.go_rest_client import UnexpectedRestResponseError
-from test_utils.smtp_server import SmtpMailsink
+from test_config_file import config
 
 class TestMergedClient(unittest.TestCase):
 
@@ -22,16 +22,7 @@ class TestMergedClient(unittest.TestCase):
         # it shouldn't be in the commit history of a repo that will later be made public.
         
         self.shared_secret = 'test'
-        
-        self.config = {
-                "cache": {
-                    "class": "nexus.token_utils.InMemoryCache",
-                    "args": []
-                    },
-                "server": "graph.api.go.sandbox.globuscs.info",
-                "client": "I am not a client",
-                "client_secret": "I am not a secret", 
-                }
+        self.config = config
 
         self.go_rest_client = GlobusOnlineRestClient(config=self.config)
         # Random numbers added to avoid overwriting some real user since these
@@ -39,9 +30,6 @@ class TestMergedClient(unittest.TestCase):
         self.default_username = 'mattias32180973219765321905174'
         self.created_users = []
         self.created_groups = []
-
-        # self.smtp_mail_sink = SmtpMailsink(host='go.mattiassandbox.globuscs.info', port=1025)
-        # self.smtp_mail_sink.start()
 
     def tearDown(self):
         for user in self.created_users:
@@ -55,9 +43,6 @@ class TestMergedClient(unittest.TestCase):
             self.go_rest_client.delete_group(group)
         self.go_rest_client.logout()
         
-        # self.smtp_mail_sink.stop()
-        # for client tests
-
     @attr('go_rest_test')
     def test_group_management(self):
 
@@ -67,7 +52,7 @@ class TestMergedClient(unittest.TestCase):
         self.go_rest_client.username_password_login(username, password=password)
 
         # Get root group: 
-        response, content = self.go_rest_client.get_group_list() # currently always times out
+        response, content = self.go_rest_client.get_group_list() # times out often
         self.assertEquals(response['status'], '200')
 
         parent_group = 'testgroup'
@@ -181,7 +166,7 @@ class TestMergedClient(unittest.TestCase):
         self.assertFalse(content['approval']['value']['admin']['value'])
         self.assertTrue(content['approval']['value']['auto']['value'])
         # Should alse work for multi-option policies like signup fields: 
-        response, content = self.go_rest_client.set_single_policy(root_id, 'sign_up_fields', ['zip', 'state'])# added line to satisfy parent-policy requirements
+        response, content = self.go_rest_client.set_single_policy(root_id, 'sign_up_fields', ['zip', 'state'])# to satisfy parent-policy requirements
         response, content = self.go_rest_client.set_single_policy(subgroup_id, 'sign_up_fields', ['zip', 'state'])
         self.assertTrue(content['sign_up_fields']['value']['zip']['value'])
         self.assertTrue(content['sign_up_fields']['value']['state']['value'])
@@ -254,7 +239,7 @@ class TestMergedClient(unittest.TestCase):
         self.go_rest_client.set_single_policy(group_id, 'approval', 'admin')
 
         user = 'mattias1' 
-        self.go_rest_client.simple_create_user(user)
+        self.go_rest_client.post_user(user, 'Test User', 'testuseremail100@gmail.com', 'sikrit')
         self.created_users.append(user)
        
         # Test that the group membership of a particular username doesn't persist
@@ -279,9 +264,9 @@ class TestMergedClient(unittest.TestCase):
         response, content = self.go_rest_client.get_user_policies(user)
         self.assertTrue(content['user_membership_visibility']['value']['community']['value'])
 
-        # About 90% of the rest of this test is broken because the smtp_mail_sink used is broken.
-        # The smtp_mail_sink currently used seems to only work reliable with localhost, but the 
-        # tests no longer use localhost. 
+        # About 90% of the rest of this test is broken because the smtp_mail_sink that was used is broken.
+        # The smtp_mail_sink that was used only worked reliably with localhost, but the tests no longer 
+        # use localhost. 
         # It might be a good idea to leave the code here because the only thing wrong is the
         # smtp_mail_sink and a working one would make the rest of the test work 
         """
@@ -312,8 +297,6 @@ class TestMergedClient(unittest.TestCase):
         }
         response, content = self.go_rest_client.put_group_email_template(group_id, invite_template['type'], invite_template)
 
-        # can't use because dependent on email_validation function called in commented out code above
-
         # Test email invite flow. It seems there is currently no way to delete 
         # email users through the REST API, so we'll have to add a dash of randomness.
         # TODO: This needs fixing if we want to run these tests in Jenkins or it will
@@ -339,10 +322,7 @@ class TestMergedClient(unittest.TestCase):
         # Sign in as user, test claim_invitation:
         self.go_rest_client.logout()
         self.go_rest_client.username_password_login(user)
-        # depends on commented out code above
-        # this causeses the rest of the tests to break because 'user' never gets to claim the invite
-        # and therefore is never apart of the group
-        # response, content = self.go_rest_client.claim_invitation(invite_id)
+        response, content = self.go_rest_client.claim_invitation(invite_id)
 
         
         # Test accepting invitation:

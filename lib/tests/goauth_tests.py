@@ -10,20 +10,12 @@ from collections import namedtuple
 from testfixtures import Replacer
 from nose.plugins.attrib import attr
 from nexus.go_rest_client import GlobusOnlineRestClient
-
+from test_config_file import config
 
 class TestMergedClient(unittest.TestCase):
 
     def setUp(self):
-        self.config = {
-                "cache": {
-                    "class": "nexus.token_utils.InMemoryCache",
-                    "args": []
-                    },
-                "server": "graph.api.go.sandbox.globuscs.info",
-                "client": "I am not a client",
-                "client_secret": "I am not a secret", 
-                }
+        self.config = config
         self.replacer = Replacer()
         self.go_rest_client = GlobusOnlineRestClient(config=self.config)
 
@@ -56,7 +48,7 @@ class TestMergedClient(unittest.TestCase):
 
     @attr('unit')
     def test_generate_request_url(self):
-        expected = "https://" + self.go_rest_client.server + "/goauth/authorize?response_type=code&client_id=I+am+not+a+client"
+        expected = "https://" + self.go_rest_client.server + "/goauth/authorize?response_type=code&client_id=testuser1"
         self.assertEqual(expected, self.go_rest_client.goauth_generate_request_url())
 
     @attr('unit')
