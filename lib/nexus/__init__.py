@@ -1,1 +1,1 @@
-from nexus.client import NexusClient as Client
+from nexus.go_rest_client import GlobusOnlineRestClient

@@ -1,32 +1,23 @@
-import binascii
-
-from collections import namedtuple
-import datetime
-import json
-import time
+__author__ = 'Mattias Lidman'
 
 import unittest
+import json
+import binascii
+import datetime
+import time
 
-from nexus import Client
-
-from nose.plugins.attrib import attr
-
+from collections import namedtuple
 from testfixtures import Replacer
+from nose.plugins.attrib import attr
+from nexus.go_rest_client import GlobusOnlineRestClient
+from test_config_file import config
 
-class ClientTests(unittest.TestCase):
+class ClientGoauthTests(unittest.TestCase):
 
     def setUp(self):
-        self.config = {
-                "authorize_url": "localhost:8080/goauth/authorize",
-                "cache": {
-                    "class": "nexus.token_utils.InMemoryCache",
-                    "args": []
-                    },
-                "server": "graph.api.globusonline.org",
-                "client": "I am not a client",
-                "client_secret": "I am not a secret", 
-                }
+        self.config = config
         self.replacer = Replacer()
+        self.go_rest_client = GlobusOnlineRestClient(config=self.config)
 
     def tearDown(self):
         self.replacer.restore()
@@ -39,28 +30,26 @@ class ClientTests(unittest.TestCase):
             return namedtuple('Request',
                     ['content', 'status_code'])(json.dumps({'pubkey':pubkey.save_pkcs1()}), 200)
         self.replacer.replace('requests.get', get_cert)
-        token = 'un=test|clientid=test|SigningSubject=https://graph.api.globusonline.org/goauth/keys/test1|expiry={0}'
+        token = 'un=test|client_id=test|SigningSubject=https://graph.api.globusonline.org/goauth/keys/test1|expiry={0}'
         expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
         token = token.format(time.mktime(expires.timetuple()))
         sig = rsa.sign(token, privkey, 'SHA-1')
         hex_sig = binascii.hexlify(sig)
         token = '{0}|sig={1}'.format(token, hex_sig)
-        client = Client(self.config)
-        client.validate_token(token)
+        self.go_rest_client.goauth_validate_token(token)
         sig = sig + 'f'
         hex_sig = binascii.hexlify(sig)
         token = '{0}|sig={1}'.format(token, hex_sig)
         try:
-            client.validate_token(token)
+            self.go_rest_client.goauth_validate_token(token)
             self.fail()
         except ValueError:
             pass
 
     @attr('unit')
     def test_generate_request_url(self):
-        client = Client(self.config)
-        expected = "https://graph.api.globusonline.org/goauth/authorize?response_type=code&client_id=I+am+not+a+client"
-        self.assertEqual(expected, client.generate_request_url())
+        expected = "https://" + self.go_rest_client.server + "/goauth/authorize?response_type=code&client_id=testuser1"
+        self.assertEqual(expected, self.go_rest_client.goauth_generate_request_url())
 
     @attr('unit')
     def test_get_access_token(self):
@@ -78,10 +67,10 @@ class ClientTests(unittest.TestCase):
             self.assertEqual(self.config['client_secret'], client_secret)
             return DictObj(result) 
 
-        self.replacer.replace('nexus.client.token_utils.request_access_token',
+        self.replacer.replace('nexus.go_rest_client.token_utils.request_access_token',
             dummy_get_access_token)
-        client = Client(self.config)
-        access_token, refresh_token, expiry = client.get_access_token_from_code('my token')
+        access_token, refresh_token, expiry = self.go_rest_client.goauth_get_access_token_from_code('my token')
         self.assertEqual(1234567, access_token)
         self.assertEqual(7654321, refresh_token)
         self.assertEqual(expected_expiry, expiry)
+
