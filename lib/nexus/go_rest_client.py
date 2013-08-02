@@ -1,6 +1,5 @@
 """
 REST client for the Globus Online identity management service (Globus Nexus).
-Merged with the NexusClient class from Client.py
 
 Supports three methods of authentication:
     - username and password
@@ -325,8 +324,8 @@ class GlobusOnlineRestClient(object):
             new_status_reason)
 
     def delete_group(self, gid):
-	path = '/groups/' + gid
-	return self._issue_rest_request(path, 'DELETE')                   
+        path = '/groups/' + gid
+        return self._issue_rest_request(path, 'DELETE')                   
 
     # USER OPERATIONS
 

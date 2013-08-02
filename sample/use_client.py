@@ -5,7 +5,7 @@ from nexus import GlobusOnlineRestClient
 # This sample makes the following assumptions about the items listed in the
 # sample.yml config file:
 # 1) 'client' exists as a user on the server and can be authenticated using the
-# password 'password'.
+# password 'client_secret'.
 # 2) You may authenticate as any user, as long as the user has registered the
 # public part of whatever private key is listed as the 'user_private_key_file'.
 # By default the dummy_key in this sample directory is used, so the dummy_key.pub

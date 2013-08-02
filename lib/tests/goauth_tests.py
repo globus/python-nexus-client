@@ -12,7 +12,7 @@ from nose.plugins.attrib import attr
 from nexus.go_rest_client import GlobusOnlineRestClient
 from test_config_file import config
 
-class TestMergedClient(unittest.TestCase):
+class ClientGoauthTests(unittest.TestCase):
 
     def setUp(self):
         self.config = config

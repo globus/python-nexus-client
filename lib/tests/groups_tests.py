@@ -15,7 +15,7 @@ from nexus.go_rest_client import GlobusOnlineRestClient
 from nexus.go_rest_client import UnexpectedRestResponseError
 from test_config_file import config
 
-class TestMergedClient(unittest.TestCase):
+class ClientGroupTests(unittest.TestCase):
 
     def setUp(self):
         # NOTE: shared_secret needs to be filled out to run the tests. Deleted because 
