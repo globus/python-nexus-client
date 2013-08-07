@@ -32,7 +32,7 @@ class TestTokenUtils(unittest.TestCase):
         cert_url = 'http://tester.com/cert1'
 
         expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
-        unsigned_token = "un=test|clientid=test|expiry={0}|SigningSubject={1}|expiry={2}".format(expiry,
+        unsigned_token = "un=test|client_id=test|expiry={0}|SigningSubject={1}|expiry={2}".format(expiry,
                 cert_url, time.mktime(expires.timetuple()))
         unsigned_token = unsigned_token
         pub_key, priv_key = key.newkeys(1024)
