@@ -43,8 +43,8 @@ import rsa
 
 log = logging.getLogger(__name__)
 
-class GlobusOnlineRestClient(object): 
-    # NOTE: GraphRestClient would be more accurate, but if we want to release 
+class GlobusOnlineRestClient(object):
+    # NOTE: GraphRestClient would be more accurate, but if we want to release
     # this publically GlobusOnlineRestClient is probably a more pedagogical name.
 
     def __init__(self, config=None, config_file=None):
@@ -61,7 +61,7 @@ class GlobusOnlineRestClient(object):
                     'args': [],
                     })
         # client is the current user that the GlobusOnlineRestClient is using
-        # but not necessarily acting as. 
+        # but not necessarily acting as.
         self.user_key_file = self.config.get('user_private_key_file', '~/.ssh/id_rsa')
         cache_class = cache_config['class']
         self.verify_ssl = self.config.get('verify_ssl', True)
@@ -130,7 +130,7 @@ class GlobusOnlineRestClient(object):
         return self._issue_rest_request(url)
 
     def get_group_email_templates(self, gid):
-        # Returned document does not include the message of each template. 
+        # Returned document does not include the message of each template.
         # Use get_group_email_template for that.
         url = '/groups/' + gid + '/email_templates'
         return self._issue_rest_request(url)
@@ -206,9 +206,9 @@ class GlobusOnlineRestClient(object):
     # GROUP MEMBERSHIP OPERATIONS
 
     def post_membership(self, gid, usernames=None, emails=None):
-        # POSTing a membership corresponds to inviting a user identified by a 
+        # POSTing a membership corresponds to inviting a user identified by a
         # username or an email address to a group, or requesting to join a group
-        # (if the actor is among the listed usernames). 
+        # (if the actor is among the listed usernames).
         url = '/groups/' + gid + '/members'
         params = {}
         if usernames:
@@ -221,7 +221,7 @@ class GlobusOnlineRestClient(object):
             params['emails'] = emails
         return self._issue_rest_request(url, http_method='POST', params=params)
 
-    def put_group_membership(self, gid, username, email, role, status, status_reason, 
+    def put_group_membership(self, gid, username, email, role, status, status_reason,
             last_changed=None, user_details=None):
         # PUT is used for accepting invitations and making other changes to a membership.
         # The document is validated against the following schema:
@@ -229,17 +229,17 @@ class GlobusOnlineRestClient(object):
         # membership_id == invite_id for purposes of accepting an invitation.
 
         url = '/groups/' + gid + '/members/' + username
-        return self._put_group_membership(url, username, email, role, status, 
+        return self._put_group_membership(url, username, email, role, status,
             status_reason, user_details)
 
-    def put_group_membership_by_id(self, invite_id, username, email, role, status,     
+    def put_group_membership_by_id(self, invite_id, username, email, role, status,
             status_reason, last_changed=None, user_details=None):
-        # put_group_membership_by_id() is used for tying an email invite to a GO user, 
+        # put_group_membership_by_id() is used for tying an email invite to a GO user,
         # use put_group_membership() otherwise.
         url = '/memberships/' + membership_id
-        return self._put_group_membership(url, username, email, role, status, 
+        return self._put_group_membership(url, username, email, role, status,
             status_reason, user_details)
-        
+
 
     def put_group_membership_role(self, gid, username, new_role):
         response, member = self.get_group_member(gid, username)
@@ -251,7 +251,7 @@ class GlobusOnlineRestClient(object):
             member['role'],
             member['status'],
             member['status_reason'])
-            
+
     def claim_invitation(self, invite_id):
         # claim_invitation ties an email invite to a GO user, and must be done
         # before the invite can be accepted.
@@ -280,7 +280,7 @@ class GlobusOnlineRestClient(object):
             'pending',
             'invited',
             'Only invited users can accept an invitation.')
- 
+
     def reject_invitation(self, gid, username, status_reason=None):
         return self._put_membership_status_wrapper(
             gid,
@@ -288,7 +288,7 @@ class GlobusOnlineRestClient(object):
             'rejected',
             'invited',
             'Only an invited user can reject an invitation.')
-  
+
     def reject_pending(self, gid, username, status_reason=None):
         return self._put_membership_status_wrapper(
             gid,
@@ -296,7 +296,7 @@ class GlobusOnlineRestClient(object):
             'rejected',
             'pending',
             'Only possible to reject membership for pending users.')
-                   
+
     def approve_join(self, gid, username, status_reason=None):
         return self._put_membership_status_wrapper(
             gid,
@@ -313,7 +313,7 @@ class GlobusOnlineRestClient(object):
             'active',
             'Only active members can be suspended.',
             new_status_reason)
- 
+
     def unsuspend_group_member(self, gid, username, new_status_reason=''):
         return self._put_membership_status_wrapper(
             gid,
@@ -325,7 +325,7 @@ class GlobusOnlineRestClient(object):
 
     def delete_group(self, gid):
         path = '/groups/' + gid
-        return self._issue_rest_request(path, 'DELETE')                   
+        return self._issue_rest_request(path, 'DELETE')
 
     # USER OPERATIONS
 
@@ -340,15 +340,18 @@ class GlobusOnlineRestClient(object):
             query_params['custom_fields'] = ','.join(custom_fields)
         url = '/users/' + username + '?' + urllib.urlencode(query_params)
         return self._issue_rest_request(url, use_session_cookies=use_session_cookies)
-    
+
     def get_user_secret(self, username, use_session_cookies=False):
         # Gets the secret used for OAuth authentication.
         return self.get_user(username, fields=['secret'], use_session_cookies=use_session_cookies)
 
+    def get_user_profile(self, username):
+        url = '/users/' + username + '/profile'
+        return self._issue_rest_request(url)
 
     def post_user(self, username, fullname, email, password, **kwargs):
         # Create a new user.
-        
+
         accept_terms = True if not kwargs.has_key('accept_terms') else kwargs['accept_terms']
         opt_in = True if not kwargs.has_key('opt_in') else kwargs['opt_in']
 
@@ -388,7 +391,7 @@ class GlobusOnlineRestClient(object):
         return response, content
 
     def delete_user(self, username):
-        path = '/users/' + username 
+        path = '/users/' + username
         return self._issue_rest_request(path, 'DELETE')
 
     def username_password_login(self, username, password=None):
@@ -400,7 +403,7 @@ class GlobusOnlineRestClient(object):
         if not password:
             password = self.default_password
         params = {'username': username, 'password': password}
-        response, content = self._issue_rest_request(path, http_method='POST', 
+        response, content = self._issue_rest_request(path, http_method='POST',
             params=params, use_session_cookies=True)
         if response['status'] != '200':
             return response, content
@@ -416,7 +419,7 @@ class GlobusOnlineRestClient(object):
 
     def username_oauth_secret_login(self, username, oauth_secret):
         # login_username_oauth_secret() tries to retrieve username's user object
-        # using the provided oauth_secret. If succesfull, the username and 
+        # using the provided oauth_secret. If succesfull, the username and
         # oauth_secret will be used for all subsequent calls until user is logged
         # out. The result of the get_user() call is returned.
         old_oauth_secret = self.oauth_secret
@@ -440,7 +443,7 @@ class GlobusOnlineRestClient(object):
             self.client = old_client
         return response, content
 
-    # NOTE: It might make sense going forward to restrict each GlobusOnlineRestClient 
+    # NOTE: It might make sense going forward to restrict each GlobusOnlineRestClient
     # object to a single user. goauth_get_access_token_from_code() doesn't handle
     # logging out and logging in as a different user very well because it uses the
     # client_secret (password). The client_secret is hard to track between logins
@@ -467,7 +470,7 @@ class GlobusOnlineRestClient(object):
              key = rsa_key
         else:
             raise ValueError("No rsa key was specified")
-        
+
         path = '/users/'+self.client+'/credentials/ssh2'
         params = {'alias': key_name, 'ssh_key': key}
         return self._issue_rest_request(path, http_method='POST', params=params)
@@ -478,15 +481,15 @@ class GlobusOnlineRestClient(object):
 
     def delete_rsa_key(self, credential_id):
         path = '/users/'+self.client+'/credentials/ssh2/'+credential_id
-        return self._issue_rest_request(path, http_method='DELETE') 
+        return self._issue_rest_request(path, http_method='DELETE')
 
     # UTILITY FUNCTIONS
 
     def build_policy_dictionary(self, **kwargs):
-        # Each kwargs must be a dictionary named after a policy, containing policy 
+        # Each kwargs must be a dictionary named after a policy, containing policy
         # options and values. For example:
         #    approval = { 'admin': True, 'auto_if_admin': False, 'auto': False, }
-        # go_rest_client_tests.py contains an example setting all policies available 
+        # go_rest_client_tests.py contains an example setting all policies available
         # as of this writing.
         policies = {}
         for policy in kwargs.keys():
@@ -518,13 +521,13 @@ class GlobusOnlineRestClient(object):
 
     def _issue_rest_request(self, path, http_method='GET', content_type='application/json',
         accept='application/json', params=None, use_session_cookies=False):
-        
+
         http = httplib2.Http(disable_ssl_certificate_validation=True, timeout=10)
-        
+
         url = 'https://' + self.server + path
         headers = {}
         headers['Content-Type'] = content_type
-        headers['Accept'] = accept 
+        headers['Accept'] = accept
         # Use OAuth authentication, session cookies, or no authentication?
         if use_session_cookies:
             if self.session_cookies:
@@ -549,7 +552,7 @@ class GlobusOnlineRestClient(object):
             return response, json.loads(content)
         else:
             return response, {}
-    
+
     def _get_auth_headers(self, method, url):
         oauth_params = {
             'oauth_version': "1.0",
@@ -563,7 +566,7 @@ class GlobusOnlineRestClient(object):
         auth_headers['Authorization'] = auth_headers['Authorization'].encode('utf-8')
         return auth_headers
 
-    def _put_group_membership(self, url, username, email, role, status, status_reason, 
+    def _put_group_membership(self, url, username, email, role, status, status_reason,
             user_details=None):
         params = {
             'username': username,
@@ -572,14 +575,14 @@ class GlobusOnlineRestClient(object):
             'role': role,
             'email': email,
         }
-        # last_changed needs to be set or validation will fail, but the value 
+        # last_changed needs to be set or validation will fail, but the value
         # will get overwritten by Graph anyway.
         params['last_changed'] = '2007-03-01T13:00:00'
         if user_details:
             params['user'] = user_details
         return self._issue_rest_request(url, http_method='PUT', params=params)
 
-    def _put_membership_status_wrapper(self, gid, username, new_status, expected_current, 
+    def _put_membership_status_wrapper(self, gid, username, new_status, expected_current,
             transition_error_message, new_status_reason=''):
         response, member = self.get_group_member(gid, username)
         if member['status'] != expected_current:
@@ -603,7 +606,7 @@ class GlobusOnlineRestClient(object):
         :param token: An authentication token provided by the client.
 
         :return: username, client id and the server that issued the token.
-        
+
         :raises ValueError: If the signature is invalid, the token is expired or
         the public key could not be gotten.
         """
@@ -663,7 +666,7 @@ class GlobusOnlineRestClient(object):
                 password=password)
         url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
         url = urlparse.urlunsplit(url_parts)
-        response = requests.get(url, headers=headers, verify=self.verify_ssl) 
+        response = requests.get(url, headers=headers, verify=self.verify_ssl)
         return response.json
 
     def goauth_request_client_credential(self, client_id, password=None):
@@ -692,9 +695,9 @@ class GlobusOnlineRestClient(object):
     def goauth_get_user_using_access_token(self, access_token):
         access_token_dict = dict(field.split('=') for field in access_token.split('|'))
         user_path = '/users/' + access_token_dict['un']
-        url_parts = ('https', self.server, user_path, None, None) 
-        url = urlparse.urlunsplit(url_parts) 
-        headers = { 
+        url_parts = ('https', self.server, user_path, None, None)
+        url = urlparse.urlunsplit(url_parts)
+        headers = {
             "X-Globus-Goauthtoken": str(access_token),
             "Content-Type": "application/json"
         }

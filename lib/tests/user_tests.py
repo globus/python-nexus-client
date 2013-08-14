@@ -9,11 +9,11 @@ from test_config_file import config
 class ClientUserTests(unittest.TestCase):
 
     def setUp(self):
-        # NOTE: shared_secret needs to be filled out to run the tests. Deleted because 
+        # NOTE: shared_secret needs to be filled out to run the tests. Deleted because
         # it shouldn't be in the commit history of a repo that will later be made public.
-        
+
         self.shared_secret = 'test'
-        
+
         self.config = config
 
         self.go_rest_client = GlobusOnlineRestClient(config=self.config)
@@ -27,7 +27,14 @@ class ClientUserTests(unittest.TestCase):
         rest_client = GlobusOnlineRestClient(config=self.config)
         response, content = rest_client._issue_rest_request('')
         self.config['server'] = "graph.api.go.sandbox.globuscs.info"
-   
+
+    @attr('go_rest_test')
+    def test_get_user_profile(self):
+        response, content = self.go_rest_client.get_user_profile('testuser2')
+        self.assertEqual(response['status'], '200')
+        expected_keys = ('username', 'fullname', 'email', 'resource_type')
+        self.assertTrue(all(k in content for k in expected_keys))
+
     @attr('go_rest_test')
     def test_user_management(self):
         username = self.default_username
@@ -40,29 +47,29 @@ class ClientUserTests(unittest.TestCase):
         except UnexpectedRestResponseError:
             pass
 
-        # Create user using POST. 
-        response, content = self.go_rest_client.post_user(username, 
+        # Create user using POST.
+        response, content = self.go_rest_client.post_user(username,
             'Mattias Lidman', 'testuseremail100@gmail.com', password)
         self.assertEquals(response['status'], '201', msg='Content: ' + str(content))
         self.assertEquals(content['username'], username)
-        
+
         # Test signout
         self.go_rest_client.logout()
         response, content = self.go_rest_client.get_user(username)
         self.assertEquals(response['status'], '403')
-        
+
         # Test signin, wrong password
         response, content = self.go_rest_client.username_password_login(username,
             password='wrong_password')
         self.assertEquals(response['status'], '403')
-        
+
         # Test signin, right password
         response, content = self.go_rest_client.username_password_login(username)
         self.assertEquals(response['status'], '200')
         self.assertEquals(content['username'], username)
-        
+
         # Test editing user and adding some custom fields using PUT.
-        params = {'fullname' : 'newFullName', 'email' : 'new@email.com', 'custom_fields' :  
+        params = {'fullname' : 'newFullName', 'email' : 'new@email.com', 'custom_fields' :
             {'custom_field1' : 'custom value 1', 'custom_field2' : 'custom value 2'}}
         response, content = self.go_rest_client.put_user(username, **params)
         response, content = self.go_rest_client.get_user(username, fields=['fullname', 'email'],
@@ -71,13 +78,13 @@ class ClientUserTests(unittest.TestCase):
         self.assertEquals(content['email'], 'new@email.com')
         self.assertEquals(content['custom_fields']['custom_field1'], 'custom value 1')
         self.assertEquals(content['custom_fields']['custom_field2'], 'custom value 2')
-        
+
         # Test delete
         self.go_rest_client.username_password_login(username)
         self.go_rest_client.delete_user(username)
         response, content = self.go_rest_client.username_password_login(username)
         self.assertEquals(response['status'], '403')
-        
+
         # Test creating a user with the helper function.
         response, content = self.go_rest_client.post_user(username, 'Test User', 'testuseremail100@gmail.com', 'sikrit')
         self.assertEquals(response['status'], '201')
@@ -91,7 +98,7 @@ class ClientUserTests(unittest.TestCase):
 
         response, content = self.go_rest_client.get_user(username)
         if response['status'] == '404':
-            self.go_rest_client.post_user(username, 'Test User', 'testuseremail100@gmail.com', 'sikrit') 
+            self.go_rest_client.post_user(username, 'Test User', 'testuseremail100@gmail.com', 'sikrit')
 
         # Test username/password login:
         response, content = self.go_rest_client.get_user(username)
@@ -126,10 +133,9 @@ class ClientUserTests(unittest.TestCase):
         password = 'sikrit'
         key_alias = 'test_key'
 
-
         self.go_rest_client.username_password_login(username, password)
 
-        with open('test_rsa_key.pub') as key_file:
+        with open('sample/dummy_key.pub') as key_file:
                 rsa_key = key_file.readline()
 
         # Test posting an rsa_key
