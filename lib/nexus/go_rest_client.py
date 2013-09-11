@@ -145,26 +145,24 @@ class GlobusOnlineRestClient(object):
         url = '/groups/' + gid + '/email_templates/' + template_id
         return self._issue_rest_request(url, params={'mode': 'view'})
 
-    def post_group(self, name, description=None, parent=None, is_active=True):
+    def post_group(self, name, description=None, parent=None):
         # Create a new group.
         if not description:
             description = 'A group called "' + name + '"'
-        params = { 'name': name, 'description': description, 'is_active': is_active }
+        params = { 'name': name, 'description': description}
         if parent:
             params['parent'] = parent
         return self._issue_rest_request('/groups/', http_method='POST', params=params)
 
-    def put_group_summary(self, gid, name=None, description=None, is_active=None):
-        # Edit group. Group name, description, and whether the group is active or not
-        # are the only things that can be set using this method.
+    def put_group_summary(self, gid, name=None, description=None):
+        # Edit group. Group name and description are the only things that
+        # can be set using this method.
         url = '/groups/' + gid
         params = {}
         if name:
             params['name'] = name
         if description:
             params['description'] = description
-        if is_active:
-            params['is_active'] = is_active
         return self._issue_rest_request(url, http_method='PUT', params=params)
 
     def put_group_policies(self, gid, policies):

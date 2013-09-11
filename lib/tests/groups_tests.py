@@ -18,9 +18,9 @@ from test_config_file import config
 class ClientGroupTests(unittest.TestCase):
 
     def setUp(self):
-        # NOTE: shared_secret needs to be filled out to run the tests. Deleted because 
+        # NOTE: shared_secret needs to be filled out to run the tests. Deleted because
         # it shouldn't be in the commit history of a repo that will later be made public.
-        
+
         self.shared_secret = 'test'
         self.config = config
 
@@ -34,15 +34,15 @@ class ClientGroupTests(unittest.TestCase):
     def tearDown(self):
         for user in self.created_users:
             self.go_rest_client.delete_user(user)
-        
+
         self.go_rest_client.logout()
         if len(self.created_groups) > 0:
             self.go_rest_client.username_password_login('testuser', 'sikrit')
-        
+
         for group in self.created_groups:
             self.go_rest_client.delete_group(group)
         self.go_rest_client.logout()
-        
+
     @attr('go_rest_test')
     def test_group_management(self):
 
@@ -51,7 +51,7 @@ class ClientGroupTests(unittest.TestCase):
         password = 'sikrit'
         self.go_rest_client.username_password_login(username, password=password)
 
-        # Get root group: 
+        # Get root group:
         response, content = self.go_rest_client.get_group_list() # times out often
         self.assertEquals(response['status'], '200')
 
@@ -62,7 +62,7 @@ class ClientGroupTests(unittest.TestCase):
 
         # Create a subroup:
         subgroup_name = "Mattias' sub-group"
-        response, content = self.go_rest_client.post_group(subgroup_name, parent=root_id, is_active=False)
+        response, content = self.go_rest_client.post_group(subgroup_name, parent=root_id)
         self.assertEquals(response['status'], '201')
         self.created_groups.append(content['id'])
 
@@ -79,14 +79,12 @@ class ClientGroupTests(unittest.TestCase):
         # Edit group and get group summary to check that that the edit sticks:
         new_name = 'New group name'
         new_description = 'New group description'
-        new_is_active = True
         response, content = self.go_rest_client.put_group_summary(subgroup_id,
-                name=new_name, description=new_description, is_active=new_is_active)
+                name=new_name, description=new_description)
         self.assertEquals(response['status'], '201')
         response, content = self.go_rest_client.get_group_summary(subgroup_id)
         self.assertEquals(content['name'], new_name)
         self.assertEquals(content['description'], new_description)
-        self.assertEquals(content['is_active'], new_is_active)
 
         # Test putting and getting group policies:
         policy_summary = {
@@ -147,7 +145,7 @@ class ClientGroupTests(unittest.TestCase):
         # self.assertEquals(response['status'], '201')
         self.assertEquals(response['status'], '200')
         # self.assertEquals(content, policies)
-    
+
         response, content = self.go_rest_client.put_group_policies(subgroup_id, policies)
 
         # self.assertEquals(response['status'], '201')
@@ -165,7 +163,7 @@ class ClientGroupTests(unittest.TestCase):
         response, content = self.go_rest_client.set_single_policy(subgroup_id, 'approval', 'auto')
         self.assertFalse(content['approval']['value']['admin']['value'])
         self.assertTrue(content['approval']['value']['auto']['value'])
-        # Should alse work for multi-option policies like signup fields: 
+        # Should alse work for multi-option policies like signup fields:
         response, content = self.go_rest_client.set_single_policy(root_id, 'sign_up_fields', ['zip', 'state'])# to satisfy parent-policy requirements
         response, content = self.go_rest_client.set_single_policy(subgroup_id, 'sign_up_fields', ['zip', 'state'])
         self.assertTrue(content['sign_up_fields']['value']['zip']['value'])
@@ -175,10 +173,10 @@ class ClientGroupTests(unittest.TestCase):
 
         # Newly created group should have the same email templates as the parent.
         response, content = self.go_rest_client.get_group_email_templates(root_id)
-        root_default_templates = sorted(content['templates'], key=lambda k: k['type']) 
+        root_default_templates = sorted(content['templates'], key=lambda k: k['type'])
         response, content = self.go_rest_client.get_group_email_templates(subgroup_id)
         self.assertEquals(response['status'], '200')
-        new_default_templates = sorted(content['templates'], key=lambda k: k['type']) 
+        new_default_templates = sorted(content['templates'], key=lambda k: k['type'])
         for new, root in zip(new_default_templates, root_default_templates):
             self.assertEquals(new['type'], root['type'])
             self.assertEquals(new['subject'], root['subject'])
@@ -211,7 +209,7 @@ class ClientGroupTests(unittest.TestCase):
         self.assertEquals(response['status'], '200')
         self.assertEquals(content['message'][0]['text'], template_params['message'][0]['text'])
 
-        # Test PUTting (updating) a template: 
+        # Test PUTting (updating) a template:
         new_subject = 'This is the new subject'
         content['subject'] = new_subject
         response, content = self.go_rest_client.put_group_email_template(subgroup_id, template_id, content)
@@ -230,18 +228,18 @@ class ClientGroupTests(unittest.TestCase):
         admin_password = 'sikrit'
         group_name = 'testgroup2'
 
-        self.go_rest_client.username_password_login(admin_username, 
-            password=admin_password) 
+        self.go_rest_client.username_password_login(admin_username,
+            password=admin_password)
         response, content = self.go_rest_client.post_group(group_name)
-    
+
         group_id = content['id']
         self.created_groups.append(group_id)
         self.go_rest_client.set_single_policy(group_id, 'approval', 'admin')
 
-        user = 'mattias1' 
+        user = 'mattias1'
         self.go_rest_client.post_user(user, 'Test User', 'testuseremail100@gmail.com', 'sikrit')
         self.created_users.append(user)
-       
+
         # Test that the group membership of a particular username doesn't persist
         # between test runs:
         response, content = self.go_rest_client.get_group_member(group_id, user)
@@ -249,8 +247,8 @@ class ClientGroupTests(unittest.TestCase):
 
         self.go_rest_client.username_password_login(user, 'sikrit') # logging in so the user can be editted
         # Test PUTing user custom fields:
-        custom_fields = { 
-            'current_project_name': 'BIRN Community', 
+        custom_fields = {
+            'current_project_name': 'BIRN Community',
             'organization': 'Computation Institute',
         }
         self.go_rest_client.put_user_custom_fields(user, **custom_fields)
@@ -265,20 +263,20 @@ class ClientGroupTests(unittest.TestCase):
         self.assertTrue(content['user_membership_visibility']['value']['community']['value'])
 
         # About 90% of the rest of this test is broken because the smtp_mail_sink that was used is broken.
-        # The smtp_mail_sink that was used only worked reliably with localhost, but the tests no longer 
-        # use localhost. 
+        # The smtp_mail_sink that was used only worked reliably with localhost, but the tests no longer
+        # use localhost.
         # It might be a good idea to leave the code here because the only thing wrong is the
-        # smtp_mail_sink and a working one would make the rest of the test work 
+        # smtp_mail_sink and a working one would make the rest of the test work
         """
-        # Get validation code from email, then test email validation:  
+        # Get validation code from email, then test email validation:
         mailboxFile2 =  StringIO.StringIO(self.smtp_mail_sink.getMailboxContents()) # mailbox contents is empty
         mailboxObject = mailbox.PortableUnixMailbox(mailboxFile2, email.message_from_file)
         messages = []
         for messageText in [ message.as_string() for message in mailboxObject ]:
             messages.append(messageText)
-        validation_code = re.search('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}', 
+        validation_code = re.search('[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}',
             str(messages[0])).group(0)
-        
+
         response, content = self.go_rest_client.post_email_validation(validation_code)
         self.assertTrue(content['email_validated'])
 
@@ -297,13 +295,13 @@ class ClientGroupTests(unittest.TestCase):
         }
         response, content = self.go_rest_client.put_group_email_template(group_id, invite_template['type'], invite_template)
 
-        # Test email invite flow. It seems there is currently no way to delete 
+        # Test email invite flow. It seems there is currently no way to delete
         # email users through the REST API, so we'll have to add a dash of randomness.
         # TODO: This needs fixing if we want to run these tests in Jenkins or it will
         # clutter the db.
         email_addr = 'someone@' + ''.join(random.sample(string.ascii_lowercase + string.digits, 10)) + '.org'
         self.go_rest_client.logout()
-        self.go_rest_client.username_password_login(admin_username, 
+        self.go_rest_client.username_password_login(admin_username,
             password=admin_password)
         response, content = self.go_rest_client.post_membership(group_id, emails=email_addr)
         self.assertEquals(response['status'], '201')
@@ -324,7 +322,7 @@ class ClientGroupTests(unittest.TestCase):
         self.go_rest_client.username_password_login(user)
         response, content = self.go_rest_client.claim_invitation(invite_id)
 
-        
+
         # Test accepting invitation:
         response, content = self.go_rest_client.accept_invitation(group_id, user)
         self.assertEquals(response['status'], '201')
@@ -342,7 +340,7 @@ class ClientGroupTests(unittest.TestCase):
             new_status_reason='User suspended because he is a very naughty boy.')
         self.assertEquals(response['status'], '201')
         self.assertEquals(content['status'], 'suspended')
-        self.assertEquals(content['status_reason'], 
+        self.assertEquals(content['status_reason'],
             'User suspended because he is a very naughty boy.')
         response, content = self.go_rest_client.unsuspend_group_member(group_id, user)
         self.assertEquals(response['status'], '201')
