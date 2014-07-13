@@ -665,7 +665,7 @@ class GlobusOnlineRestClient(object):
         url_parts = ('https', self.server, '/goauth/authorize', query_params, None)
         url = urlparse.urlunsplit(url_parts)
         response = requests.get(url, headers=headers, verify=self.verify_ssl)
-        return response.json
+        return response.json()
 
     def goauth_request_client_credential(self, client_id, password=None):
         """
@@ -688,7 +688,7 @@ class GlobusOnlineRestClient(object):
         url_parts = ('https', self.server, path, None, None)
         url = urlparse.urlunsplit(url_parts)
         response = requests.post(url, data={'grant_type': 'client_credentials'}, headers=headers, verify=self.verify_ssl)
-        return response.json
+        return response.json()
 
     def goauth_get_user_using_access_token(self, access_token):
         access_token_dict = dict(field.split('=') for field in access_token.split('|'))
@@ -701,7 +701,7 @@ class GlobusOnlineRestClient(object):
         }
         response = requests.get(url, headers=headers, verify=self.verify_ssl)
         assert(response.status_code == requests.codes.ok)
-        return response.json
+        return response.json()
 
 class StateTransitionError(Exception):
     def __init__(self, prev_state, next_state, message):
