@@ -1,25 +1,17 @@
-VIRTUAL_ENV_DIR=vendor/python
-BOTO_VIRTUAL_ENV_DIR=vendor/boto
-PIP_CMD=PIP_DOWNLOAD_CACHE=vendor/cache $(VIRTUAL_ENV_DIR)/bin/pip install --no-deps -i http://pypi.utils.globuscs.info/simple -r 
+VIRTUAL_ENV_DIR=dist
+PIP_CMD=$(VIRTUAL_ENV_DIR)/bin/pip install --no-deps -r 
 DEPLOY_PIP_CMD=PIP_DOWNLOAD_CACHE=vendor/cache $(VIRTUAL_ENV_DIR)/bin/pip install --no-deps -r 
 
 .PHONY: build
-build: $(VIRTUAL_ENV_DIR)/lib/python2.7/site-packages/goauth
+build: $(VIRTUAL_ENV_DIR) requirements.txt
 
-$(VIRTUAL_ENV_DIR)/lib/python2.7/site-packages/goauth/: vendor/virtualenv.py
-	python vendor/virtualenv.py --python python2.7 --no-site-packages $(VIRTUAL_ENV_DIR)
+$(VIRTUAL_ENV_DIR):
+	virtualenv --python python2.7 --no-site-packages $(VIRTUAL_ENV_DIR)
 	$(PIP_CMD) requirements.txt
-	vendor/python/bin/python setup.py install
-
-vendor/virtualenv.py:
-	curl -o vendor/virtualenv.py https://raw.github.com/pypa/virtualenv/master/virtualenv.py
+	$(VIRTUAL_ENV_DIR)/bin/python setup.py install
 
 clean:
 	rm -rf $(VIRTUAL_ENV_DIR)
-	rm -rf build
-	rm -rf dist
-	rm -rf gearbox
-	rm -rf *.egg
 	find ./ -name "*.pyc" -delete
 
 test: build
