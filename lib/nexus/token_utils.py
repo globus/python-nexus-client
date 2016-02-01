@@ -158,6 +158,7 @@ def validate_token(token, cache=InMemoryCache(), verify=True):
 
 def request_access_token(client_id, client_secret,
         auth_code, auth_uri="https://graph.api.globusonline.org/token",
+        redirect_uri=None,
         verify=False):
     """
     Given an authorization code, request an access token.
@@ -175,6 +176,9 @@ def request_access_token(client_id, client_secret,
             'grant_type': 'authorization_code',
             'code': auth_code,
             }
+    if redirect_uri:
+        payload['redirect_uri'] = redirect_uri
+
     response = requests.post(auth_uri,
             auth=(client_id, client_secret),
             data=payload, verify=verify)

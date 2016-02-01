@@ -5,7 +5,7 @@ with open('requirements.txt') as reqs:
 
 CONFIG = {
   'description':'client for GlobusOnline Nexus',
-  'version':'0.0.1',
+  'version':'0.0.2',
   'name':'nexus-client',
   'package_dir': {'':'lib'},
   'packages': ['nexus'],
