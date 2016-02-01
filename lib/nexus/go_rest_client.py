@@ -630,18 +630,21 @@ class GlobusOnlineRestClient(object):
                 urllib.urlencode(query_params), None)
         return urlparse.urlunsplit(parts)
 
-    def goauth_get_access_token_from_code(self, code):
+    def goauth_get_access_token_from_code(self, code, redirect_uri=None):
         """
         After receiving a code from the end user, this method will acquire an
         access token from the server which can be used for subsequent requests.
 
         :param code: The code which the user received after authenticating with the server and authorizing the client.
+        :param redirect_uri: The redirect URI which will be used for token
+        exchange. Per OAuth2 spec, this must be passed here.
 
         :return: Tuple containing (access_token, refresh_token, expire_time)
         """
         url_parts = ('https', self.server, '/goauth/token', None, None)
         result = token_utils.request_access_token(self.client,
-                self.client_secret, code, urlparse.urlunsplit(url_parts))
+                self.client_secret, code, urlparse.urlunsplit(url_parts),
+                redirect_uri=redirect_uri)
         return (
                 result.access_token,
                 result.refresh_token,
