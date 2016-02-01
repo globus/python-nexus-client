@@ -611,12 +611,15 @@ class GlobusOnlineRestClient(object):
         return token_utils.validate_token(token, self.cache, self.verify_ssl)
 
 
-    def goauth_generate_request_url(self, username=None):
+    def goauth_generate_request_url(self, username=None, redirect_uri=None):
         """
         In order for the user to authorize the client to access his data, he
         must first go to the custom url provided here.
 
         :param username: (Optional) This will pre-populate the user's info in the form
+        :param redirect_uri: This will add the redirect_uri to the generated
+        query parameters. Note that if this is passed here, it must also be
+        passed identically to goauth_get_access_token_from_code()
 
         :return: A custom authorization url
         """
@@ -626,6 +629,8 @@ class GlobusOnlineRestClient(object):
                 }
         if username is not None:
             query_params['username'] = username
+        if redirect_uri:
+            query_params['redirect_uri'] = redirect_uri
         parts = ('https', self.server, '/goauth/authorize',
                 urllib.urlencode(query_params), None)
         return urlparse.urlunsplit(parts)
