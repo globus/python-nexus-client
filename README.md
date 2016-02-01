@@ -1,7 +1,7 @@
 python-nexus-client
 ===================
 
-Python client for interacting with GlobusOnline Nexus service.
+Example python client for interacting with Globus Nexus service.
 
 The main entry point to this library is nexus.Client.  This allows
 access to all of the main methods.
