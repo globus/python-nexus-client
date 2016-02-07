@@ -1,4 +1,6 @@
 import os.path
+import base64
+import requests
 from getpass import getpass
 from nexus import GlobusOnlineRestClient
 
@@ -16,7 +18,7 @@ pwd = os.path.dirname(__file__)
 user_client = GlobusOnlineRestClient(config_file=os.path.join(pwd, 'user_client_config.yml'))
 alias_client = GlobusOnlineRestClient(config_file=os.path.join(pwd, 'alias_client_config.yml'))
 
-# Add the rsa key from the file specified in alias_client_config.yml 
+# Add the rsa key from the file specified in alias_client_config.yml
 # to the alias_client's list of rsa keys
 filename = alias_client.user_key_file+".pub"
 print "Adding rsa key from " + filename
@@ -28,33 +30,19 @@ elif response['status'] == '409':
 else:
     print "unable to add key"
 
-# Generate a url for the end user to use to authorize this client/authenticate.
-url = alias_client.goauth_generate_request_url()
-print "Please authenticate using the following url"
-print url
-token = raw_input("Please copy the resulting code here: ")
-# At this point the end user needs to authenticate with the supplied url.  The
-# easiest way to do this is: curl -k --user test:test1 "<supplied_url>".  The
-# result will contain the token in the "code" field.  Paste that here.
 
-# Validate the token:
-try:
-    alias, client_id, nexus_host = alias_client.goauth_validate_token(token)
-    print "Yup, you are {0}".format(alias)
-except:
-    print "That is not a valid authorization code"
+# Fetch an Access Token via a basic auth header
+print("Getting an Access Token via a Client Credentials OAuth flow.")
+token_url = 'https://nexus.api.globusonline.org/goauth/token?grant_type=client_credentials'
+username = raw_input("Please enter your Nexus username: ")
+password = getpass("Please enter your Nexus password: ")
 
-print("As " + alias + ", get an access key for yourself using rsa:")
-print alias_client.goauth_request_client_credential(alias, lambda: getpass("Private Key Password"))
+auth_header = 'Basic {}'.format(
+    base64.b64encode('{0}:{1}'.format(username, password)))
+response = requests.post(token_url, headers={'Authorization': auth_header})
+access_token = response.json()['access_token']
 
-print("As " + alias + ", get a request token for client " + user_client.client + " using rsa authentication:")
-response = alias_client.goauth_rsa_get_request_token(alias, user_client.client, lambda: getpass("Private Key Password"))
-print response
-
-print("As " + user_client.client + ", get an access key from code:")
-access_token, refresh_token, expires_in = user_client.goauth_get_access_token_from_code(response['code'])
-print access_token
-
+# make sure it's a good token
 print("Validate access token:")
 alias, client_id, nexus_host = user_client.goauth_validate_token(access_token)
 print(nexus_host + " claims this is a valid token issued by " + alias + " for " + client_id)
@@ -62,4 +50,3 @@ print(nexus_host + " claims this is a valid token issued by " + alias + " for " 
 print("Use access token to act as " + alias + ":")
 response = user_client.goauth_get_user_using_access_token(access_token)
 print response
-
