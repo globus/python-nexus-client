@@ -172,12 +172,23 @@ def request_access_token(client_id, client_secret,
     fields: access_token, refresh_token and expires_in
     :raises TokenRequestError: If the request for an access token fails
     """
+    if not redirect_uri:
+        raise ValueError(
+            'Missing redirect_uri for access token exchange. '
+            'This likely occurred because of a call to '
+            'goauth_get_access_token_from_code() which did not pass the '
+            'redirect_uri keyword argument. '
+            'Although this used to be supported behavior, the OAuth '
+            'specification requires that any redirect URI passed during '
+            'code generation also be passed during the token exchange. '
+            'Because Nexus does not support requests for the code '
+            'without a redirect URI, this is a required parameter.')
+
     payload = {
             'grant_type': 'authorization_code',
             'code': auth_code,
+            'redirect_uri': redirect_uri,
             }
-    if redirect_uri:
-        payload['redirect_uri'] = redirect_uri
 
     response = requests.post(auth_uri,
             auth=(client_id, client_secret),
