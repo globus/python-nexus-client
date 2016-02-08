@@ -4,8 +4,8 @@ with open('requirements.txt') as reqs:
     install_requires = [line for line in reqs]
 
 CONFIG = {
-  'description':'client for GlobusOnline Nexus',
-  'version':'0.0.2',
+  'description':'client for Globus Nexus',
+  'version':'0.0.3',
   'name':'nexus-client',
   'package_dir': {'':'lib'},
   'packages': ['nexus'],

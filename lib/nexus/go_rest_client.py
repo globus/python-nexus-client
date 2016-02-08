@@ -611,29 +611,24 @@ class GlobusOnlineRestClient(object):
         return token_utils.validate_token(token, self.cache, self.verify_ssl)
 
 
-    def goauth_generate_request_url(self, username=None, redirect_uri=None):
+    def goauth_generate_request_url(self, *args, **kwargs):
         """
-        In order for the user to authorize the client to access his data, he
-        must first go to the custom url provided here.
+        In order to obtain an access token, you first need to obtain a code to
+        exchange for it as part of a 3-legged OAuth flow.
+        This method used to provide a means of fetching the token by means of a
+        request to the Nexus service via Basic Authentication. However, that
+        approach is no longer viable, so this method is defunct.
 
-        :param username: (Optional) This will pre-populate the user's info in the form
-        :param redirect_uri: This will add the redirect_uri to the generated
-        query parameters. Note that if this is passed here, it must also be
-        passed identically to goauth_get_access_token_from_code()
-
-        :return: A custom authorization url
+        Rather than continuing to function, but providing non-meaningful
+        information, this method should raise a NotImplementedError to
+        guarantee that library users see and understand the change.
         """
-        query_params = {
-                "response_type": "code",
-                "client_id": self.client,
-                }
-        if username is not None:
-            query_params['username'] = username
-        if redirect_uri:
-            query_params['redirect_uri'] = redirect_uri
-        parts = ('https', self.server, '/goauth/authorize',
-                urllib.urlencode(query_params), None)
-        return urlparse.urlunsplit(parts)
+        raise NotImplementedError(
+            'As of Feburary, 2016, this feature is no longer available. '
+            'If you require an access token, the best way is to make use of '
+            '`https://www.globus.org/OAuth`.\n'
+            'If you are unsure how to do so, please contact us at '
+            'support@globus.org')
 
     def goauth_get_access_token_from_code(self, code, redirect_uri=None):
         """
