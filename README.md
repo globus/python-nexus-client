@@ -1,14 +1,13 @@
 python-nexus-client
 ===================
 
-Example python client for interacting with Globus Nexus service.
+Warning
+---
 
-The main entry point to this library is `nexus.Client`.  This allows
-access to all of the main methods.
-
-When a user authenticates with Nexus, they are issued a token.  An API
-client can validate a user's authentication by taking that token and
-calling `client.authenticate_user(token)`.
+This library is provided only for a few limitited, legacy use cases.
+It should not be used for any new development. The APIs it interfaces with
+are considered private, and does not expose any functionality which Globus
+is commited to supporting long term.
 
 This Library is Only an Example
 ---
